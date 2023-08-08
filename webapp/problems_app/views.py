@@ -4,44 +4,62 @@ from django.urls import reverse
 
 from .models import Problems
 from .forms import PForm, SForm
+from django.utils import timezone
+from .utils import give_sol
 
 
 def enter_problem(request):
     if request.method == 'POST':
-        pform = PForm(request.POST)
-        if pform.is_valid():
-            problem = pform.cleaned_data['pdata']
-
-            try:
-                data = Problems.objects.get(problem_content_text=problem)
-                p_id = data.id
-                return redirect("solution", p_id=p_id)
-            except Problems.DoesNotExist:
-                return redirect("no_solution")
+        form = PForm(request.POST)
+        if form.is_valid():
+            problem = form.cleaned_data['pdata']
+            return redirect("solution", problem=problem)
     else:
-        pform = PForm()
+        form = PForm()
 
     context = {
-        'form': pform,
+        'form': form,
     }
 
     return render(request, 'problems_app/enter_problem.html', context=context)
 
 
-def solution(request, p_id):
+def solution(request, problem):
 
-    sol = Problems.objects.get(id=p_id).solution_content_text
+    sol = give_sol(problem)
+
+    enter_url = reverse("enter_solution", kwargs={"problem": problem})
 
     context = {
-        'p_id': p_id,
-        'solution': sol
+        'problem': problem,
+        'solution': sol,
+        'enter_url': enter_url,
+        'list': [1, 2, 3],
     }
 
     return render(request, 'problems_app/solution.html', context=context)
 
 
-def no_solution(request):
+def enter_solution(request, problem):
+
+    if request.method == 'POST':
+        form = SForm(request.POST)
+        if form.is_valid():
+            given_solution = form.cleaned_data['sdata']
+            try:
+                p = Problems.objects.get(problem_content_text=problem)
+                p.solution_content_text = given_solution
+            except:
+                p = Problems(problem_content_text=problem, solution_content_text=given_solution,
+                         pub_date=timezone.now())
+            p.save()
+            return redirect("solution", problem=problem)
+    else:
+        form = SForm(initial={"sdata": give_sol(problem)})
+
     context = {
-        'form': SForm(),
+        'form': form,
     }
-    return render(request, 'problems_app/no_solution.html', context=context)
+
+    return render(request, 'problems_app/enter_solution.html', context=context)
+

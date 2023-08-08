@@ -6,12 +6,12 @@
 </head>
 <body>
 
-    <text>Ten problem nie ma jeszcze rozwiązania. Możesz doddać rozwiązanie.</text>
     <form method="post">
     {% csrf_token %}
     {{ form.as_p }}
-    <input type="submit" value="submit">
+    <input type="submit" value="Zatwierdź rozwiązanie">
     </form>
+
 
 </body>
 </html>

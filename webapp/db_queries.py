@@ -14,11 +14,10 @@ if __name__ == "__main__":
 
     # reset_table()
 
-    Problems(id=1, problem_content_text="Elo", solution_content_text="Tak",
-             pub_date=timezone.now()).save()
+    # Problems(id=1, problem_content_text="Elo", solution_content_text="Tak", pub_date=timezone.now()).save()
 
     print(Problems.objects.all())
 
     print(Problems.objects.values_list('pk', flat=True))
 
-   #  reset_table()
+    reset_table()
