@@ -21,4 +21,4 @@ if __name__ == "__main__":
 
     print(Problems.objects.values_list('pk', flat=True))
 
-    reset_table()
+   #  reset_table()
