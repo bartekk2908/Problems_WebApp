@@ -19,6 +19,16 @@ def give_sol(problem):
     return sol
 
 
+def give_embeddings(sen):
+    inputs = tokenizer(sen, return_tensors="pt", padding=True, truncation=True)
+    with torch.no_grad():
+        outputs = model(**inputs)
+    embeddings = outputs.last_hidden_state[:, 0, :].numpy()
+    # print(embeddings)
+    # print()
+    return embeddings
+
+
 def similar_problems(problem, n):
 
     def give_similarity_old(sen1, sen2):
@@ -32,27 +42,14 @@ def similar_problems(problem, n):
         return np.min(similarity)
 
     def give_similarity(sen1, sen2):
-
-        inputs1 = tokenizer(sen1, return_tensors="pt", padding=True, truncation=True)
-        inputs2 = tokenizer(sen2, return_tensors="pt", padding=True, truncation=True)
-
-        with torch.no_grad():
-            outputs1 = model(**inputs1)
-            outputs2 = model(**inputs2)
-
-        embeddings1 = outputs1.last_hidden_state[:, 0, :].numpy()
-        embeddings2 = outputs2.last_hidden_state[:, 0, :].numpy()
-
-        similarity = cosine_similarity(embeddings1, embeddings2)
-
-        return similarity[0][0]
+        return cosine_similarity(give_embeddings(sen1), give_embeddings(sen2))[0][0]
 
     similarities = []
     p_list = Problems.objects.all()
 
     for i in range(len(p_list)):
         s = give_similarity(problem, p_list[i].problem_content_text)
-        print(f"{p_list[i].problem_content_text} -> {s}")
+        # print(f"{p_list[i].problem_content_text} -> {s}")
         similarities.append(s)
     indexes = sorted(range(len(similarities)), key=lambda x: similarities[x], reverse=True)[:n]
     return np.array(list(map(lambda x: x.problem_content_text, p_list)))[indexes]

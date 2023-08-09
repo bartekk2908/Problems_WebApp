@@ -17,8 +17,8 @@
     <text>Ten problem nie ma jeszcze rozwiązania. Możesz dodać rozwiązanie lub zobaczyć podobne problemy.</text><br />
     <a href="{{ enter_url }}">Dodaj rozwiązanie</a><br />
 
-    {% for i in list %}
-        <br /><a> {{ i }} </a><br />
+    {% for p, url in list %}
+        <br /><a href="{{ url }}"> {{ p }} </a><br />
     {% endfor %}
 
     {% endif%}

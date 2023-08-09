@@ -25,4 +25,4 @@ def testing_s():
 if __name__ == "__main__":
     print("\n\n")
 
-    testing_s()
+    testing_1()

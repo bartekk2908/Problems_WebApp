@@ -30,7 +30,11 @@ def solution(request, problem):
 
     enter_url = reverse("enter_solution", kwargs={"problem": problem})
 
-    sim_list = [] if sol != "" else similar_problems(problem, 3)
+    if sol == "":
+        sims = similar_problems(problem, 3)
+        sim_list = zip(sims, list(map(lambda x: reverse("solution", kwargs={"problem": x}), sims)))
+    else:
+        sim_list = []
 
     context = {
         'problem': problem,
@@ -53,7 +57,7 @@ def enter_solution(request, problem):
                 p.solution_content_text = given_solution
             except:
                 p = Problems(problem_content_text=problem, solution_content_text=given_solution,
-                         pub_date=timezone.now())
+                             pub_date=timezone.now())
             p.save()
             return redirect("solution", problem=problem)
     else:
