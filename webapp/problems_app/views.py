@@ -8,12 +8,23 @@ from django.utils import timezone
 from .utils import give_sol, similar_problems
 
 
-def enter_problem(request):
+def main_page(request):
+
+    url = reverse("enter_query")
+
+    context = {
+        "url": url,
+    }
+
+    return render(request, 'problems_app/main_page.html', context=context)
+
+
+def enter_query(request):
     if request.method == 'POST':
         form = PForm(request.POST)
         if form.is_valid():
-            problem = form.cleaned_data['pdata']
-            return redirect("solution", problem=problem)
+            query = form.cleaned_data['pdata']
+            return redirect("solution", query=query)
     else:
         form = PForm()
 
@@ -21,20 +32,18 @@ def enter_problem(request):
         'form': form,
     }
 
-    return render(request, 'problems_app/enter_problem.html', context=context)
+    return render(request, 'problems_app/enter_query.html', context=context)
 
 
-def solution(request, problem):
+def solution(request, query):
+    sims = similar_problems(query, 3)
 
+    problem = sims[0]
     sol = give_sol(problem)
 
     enter_url = reverse("enter_solution", kwargs={"problem": problem})
 
-    if sol == "":
-        sims = similar_problems(problem, 3)
-        sim_list = zip(sims, list(map(lambda x: reverse("solution", kwargs={"problem": x}), sims)))
-    else:
-        sim_list = []
+    sim_list = zip(sims, list(map(lambda x: reverse("solution", kwargs={"query": x}), sims[1:])))
 
     context = {
         'problem': problem,
@@ -59,7 +68,7 @@ def enter_solution(request, problem):
                 p = Problems(problem_content_text=problem, solution_content_text=given_solution,
                              pub_date=timezone.now())
             p.save()
-            return redirect("solution", problem=problem)
+            return redirect("solution", query=problem)
     else:
         form = SForm(initial={"sdata": give_sol(problem)})
 

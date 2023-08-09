@@ -6,23 +6,16 @@
 </head>
 <body>
 
-    {% if solution != "" %}
-
-    <text>Rozwiązanie:</text>
-    {{solution}}
-    <a href="{{ enter_url }}">Edytuj rozwiązanie</a>
-
-    {% else %}
-
-    <text>Ten problem nie ma jeszcze rozwiązania. Możesz dodać rozwiązanie lub zobaczyć podobne problemy.</text><br />
-    <a href="{{ enter_url }}">Dodaj rozwiązanie</a><br />
+    <text>Sugerowane rozwiązanie:</text> <br /> <br />
+    <b>{{ problem }}</b> <br />
+    {{ solution }} <br /> <br />
+    <a href="{{ enter_url }}">Edytuj to rozwiązanie</a> <br />
+    <br />
+    <text>Podobne problemy:</text> <br />
 
     {% for p, url in list %}
-        <br /><a href="{{ url }}"> {{ p }} </a><br />
+        <br /><a href="{{ url }}"> {{ p }} </a> <br />
     {% endfor %}
-
-    {% endif%}
-
 
 </body>
 </html>
