@@ -19,7 +19,7 @@ def testing_1():
 
 
 def testing_s():
-    print(similar_problems("ipsum orem dolor  sit amet", 3))
+    print(similar_problems("Loro nie wiem co to amen", 3))
 
 
 if __name__ == "__main__":

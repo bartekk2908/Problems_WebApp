@@ -5,7 +5,7 @@ from django.urls import reverse
 from .models import Problems
 from .forms import PForm, SForm
 from django.utils import timezone
-from .utils import give_sol
+from .utils import give_sol, similar_problems
 
 
 def enter_problem(request):
@@ -30,11 +30,13 @@ def solution(request, problem):
 
     enter_url = reverse("enter_solution", kwargs={"problem": problem})
 
+    sim_list = [] if sol != "" else similar_problems(problem, 3)
+
     context = {
         'problem': problem,
         'solution': sol,
         'enter_url': enter_url,
-        'list': [1, 2, 3],
+        'list': sim_list,
     }
 
     return render(request, 'problems_app/solution.html', context=context)
