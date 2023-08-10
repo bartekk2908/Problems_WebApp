@@ -7,8 +7,8 @@ from transformers import BertTokenizer, BertModel
 import torch
 
 
-tokenizer = BertTokenizer.from_pretrained('bert-base-uncased')
-model = BertModel.from_pretrained('bert-base-uncased')
+model = BertModel.from_pretrained("dkleczek/bert-base-polish-cased-v1")
+tokenizer = BertTokenizer.from_pretrained("dkleczek/bert-base-polish-cased-v1")
 
 
 def give_sol(problem):
@@ -31,6 +31,7 @@ def give_embeddings(sen):
 
 def similar_problems(problem, n):
 
+    """
     def give_similarity_old(sen1, sen2):
 
         # Convert the texts into TF-IDF vectors
@@ -40,6 +41,7 @@ def similar_problems(problem, n):
         # Calculate the cosine similarity between the vectors
         similarity = cosine_similarity(vectors)
         return np.min(similarity)
+    """
 
     def give_similarity(sen1, sen2):
         return cosine_similarity(give_embeddings(sen1), give_embeddings(sen2))[0][0]
