@@ -49,7 +49,7 @@ def similar_problems(problem, n):
 
     for i in range(len(p_list)):
         s = give_similarity(problem, p_list[i].problem_content_text)
-        # print(f"{p_list[i].problem_content_text} -> {s}")
+        print(f"{p_list[i].problem_content_text} -> {s}")
         similarities.append(s)
     indexes = sorted(range(len(similarities)), key=lambda x: similarities[x], reverse=True)[:n]
     return np.array(list(map(lambda x: x.problem_content_text, p_list)))[indexes]

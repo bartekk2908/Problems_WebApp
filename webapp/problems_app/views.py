@@ -3,30 +3,58 @@ from django.http import HttpResponse
 from django.urls import reverse
 
 from .models import Problems
-from .forms import PForm, SForm
+from .forms import Q_Form, S_edit_Form, P_Form
 from django.utils import timezone
 from .utils import give_sol, similar_problems
 
 
 def main_page(request):
 
-    url = reverse("enter_query")
+    url_eq = reverse("enter_query")
+    url_ep = reverse("enter_problem")
 
     context = {
-        "url": url,
+        "url_eq": url_eq,
+        "url_ep": url_ep,
     }
 
     return render(request, 'problems_app/main_page.html', context=context)
 
 
-def enter_query(request):
+def enter_problem(request):
+
     if request.method == 'POST':
-        form = PForm(request.POST)
+        form = P_Form(request.POST)
         if form.is_valid():
-            query = form.cleaned_data['pdata']
+            problem = form.cleaned_data['pdata']
+            sol = form.cleaned_data['sdata']
+            try:
+                p = Problems.objects.get(problem_content_text=problem)
+                print("Rozwiązanie tego problemu już istnieje.")
+            except:
+                p = Problems(problem_content_text=problem, solution_content_text=sol,
+                             pub_date=timezone.now())
+                p.save()
+            return redirect("main_page")
+    else:
+        form = P_Form()
+
+    context = {
+        'form': form,
+    }
+
+    return render(request, 'problems_app/enter_problem.html', context=context)
+
+
+def enter_query(request):
+
+    if request.method == 'POST':
+        form = Q_Form(request.POST)
+        if form.is_valid():
+            query = form.cleaned_data['data']
             return redirect("solution", query=query)
     else:
-        form = PForm()
+        form = Q_Form()
 
     context = {
         'form': form,
@@ -36,14 +64,16 @@ def enter_query(request):
 
 
 def solution(request, query):
-    sims = similar_problems(query, 3)
+
+    n = 3
+    sims = similar_problems(query, n=n)
 
     problem = sims[0]
     sol = give_sol(problem)
 
-    enter_url = reverse("enter_solution", kwargs={"problem": problem})
+    enter_url = reverse("edit_solution", kwargs={"problem": problem})
 
-    sim_list = zip(sims, list(map(lambda x: reverse("solution", kwargs={"query": x}), sims[1:])))
+    sim_list = zip(sims[1:], list(map(lambda x: reverse("solution", kwargs={"query": x}), sims[1:])))
 
     context = {
         'problem': problem,
@@ -55,26 +85,26 @@ def solution(request, query):
     return render(request, 'problems_app/solution.html', context=context)
 
 
-def enter_solution(request, problem):
+def edit_solution(request, problem):
 
     if request.method == 'POST':
-        form = SForm(request.POST)
+        form = S_edit_Form(request.POST)
         if form.is_valid():
-            given_solution = form.cleaned_data['sdata']
+            sol = form.cleaned_data['data']
             try:
                 p = Problems.objects.get(problem_content_text=problem)
-                p.solution_content_text = given_solution
+                p.solution_content_text = sol
             except:
-                p = Problems(problem_content_text=problem, solution_content_text=given_solution,
+                p = Problems(problem_content_text=problem, solution_content_text=sol,
                              pub_date=timezone.now())
             p.save()
             return redirect("solution", query=problem)
     else:
-        form = SForm(initial={"sdata": give_sol(problem)})
+        form = S_edit_Form(initial={"sdata": give_sol(problem)})
 
     context = {
+        'problem': problem,
         'form': form,
     }
 
-    return render(request, 'problems_app/enter_solution.html', context=context)
-
+    return render(request, 'problems_app/edit_solution.html', context=context)
