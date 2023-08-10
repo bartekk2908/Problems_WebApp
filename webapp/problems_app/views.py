@@ -32,7 +32,7 @@ def enter_problem(request):
                 p = Problems.objects.get(problem_content_text=problem)
                 print("Rozwiązanie tego problemu już istnieje.")
             except:
-                p = Problems(problem_content_text=problem, solution_content_text=sol,
+                p = Problems(problem_content_text=problem, solution_content_richtext=sol,
                              pub_date=timezone.now())
                 p.save()
             return redirect("main_page")
@@ -93,14 +93,14 @@ def edit_solution(request, problem):
             sol = form.cleaned_data['data']
             try:
                 p = Problems.objects.get(problem_content_text=problem)
-                p.solution_content_text = sol
+                p.solution_content_richtext = sol
             except:
-                p = Problems(problem_content_text=problem, solution_content_text=sol,
+                p = Problems(problem_content_text=problem, solution_content_richtext=sol,
                              pub_date=timezone.now())
             p.save()
             return redirect("solution", query=problem)
     else:
-        form = S_edit_Form(initial={"sdata": give_sol(problem)})
+        form = S_edit_Form(initial={"data": give_sol(problem)})
 
     context = {
         'problem': problem,

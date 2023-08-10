@@ -8,7 +8,10 @@
 
     <text>Sugerowane rozwiązanie:</text> <br /> <br />
     <b>{{ problem }}</b> <br />
-    {{ solution }} <br /> <br />
+    <div>
+        {{solution | safe}}
+    </div>
+    <br /> <br />
     <a href="{{ enter_url }}">Edytuj to rozwiązanie</a> <br />
     <br />
     <text>Podobne problemy:</text> <br />

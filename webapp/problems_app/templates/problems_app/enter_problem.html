@@ -9,6 +9,7 @@
     <form method="post">
     {% csrf_token %}
     {{ form.as_p }}
+    {{ form.media }}
     <input type="submit" value="Zatwierdź rozwiązanie">
     </form>
 

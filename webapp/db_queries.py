@@ -10,12 +10,9 @@ def reset_table():
     Problems.objects.all().delete()
 
 
-def testing_1():
-    # reset_table()
-    # Problems(id=1, problem_content_text="Elo", solution_content_text="Tak", pub_date=timezone.now()).save()
+def show_data():
     print(Problems.objects.all())
     print(Problems.objects.values_list('pk', flat=True))
-    # reset_table()
 
 
 def testing_s():
@@ -53,7 +50,7 @@ def enter_examples():
     ]
 
     for i in range(len(pytania)):
-        Problems(id=i, problem_content_text=pytania[i], solution_content_text=rozwiazania[i], pub_date=timezone.now()).save()
+        Problems(id=i, problem_content_text=pytania[i], solution_content_richtext=rozwiazania[i], pub_date=timezone.now()).save()
 
 
 def enter_examples_2():
@@ -87,11 +84,12 @@ def enter_examples_2():
     ]
 
     for i in range(len(questions)):
-        Problems(id=i, problem_content_text=questions[i], solution_content_text=solutions[i], pub_date=timezone.now()).save()
+        Problems(id=i, problem_content_text=questions[i], solution_content_richtext=solutions[i], pub_date=timezone.now()).save()
 
 
 if __name__ == "__main__":
     print("\n\n")
 
-    reset_table()
-    enter_examples()
+    show_data()
+    # reset_table()
+    # enter_examples()

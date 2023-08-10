@@ -13,7 +13,7 @@ tokenizer = BertTokenizer.from_pretrained("dkleczek/bert-base-polish-cased-v1")
 
 def give_sol(problem):
     try:
-        sol = Problems.objects.get(problem_content_text=problem).solution_content_text
+        sol = Problems.objects.get(problem_content_text=problem).solution_content_richtext
     except Problems.DoesNotExist:
         sol = ""
     return sol
