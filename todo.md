@@ -1,6 +1,11 @@
 # TODO
+
 - wygląd stron (html + css)
+- 
 - obsłużenie próby dodania istniejącego już problemu
+- 
 - logowanie się
-- zapisywanie embeddings do bazy
+- tabela użytkowników
+- przypisanie użytkownika do pytania
+- problem_id i zapisywanie kolejnych edycji problemu
 -

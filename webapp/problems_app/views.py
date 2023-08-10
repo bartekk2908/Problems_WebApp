@@ -5,7 +5,8 @@ from django.urls import reverse
 from .models import Problems
 from .forms import Q_Form, S_edit_Form, P_Form
 from django.utils import timezone
-from .utils import give_sol, similar_problems
+from .utils import give_sol, similar_problems, give_embeddings
+import json
 
 
 def main_page(request):
@@ -33,7 +34,7 @@ def enter_problem(request):
                 print("Rozwiązanie tego problemu już istnieje.")
             except:
                 p = Problems(problem_content_text=problem, solution_content_richtext=sol,
-                             pub_date=timezone.now())
+                             pub_date=timezone.now(), embeddings_json=json.dumps(give_embeddings(problem).tolist()))
                 p.save()
             return redirect("main_page")
     else:
@@ -91,12 +92,9 @@ def edit_solution(request, problem):
         form = S_edit_Form(request.POST)
         if form.is_valid():
             sol = form.cleaned_data['data']
-            try:
-                p = Problems.objects.get(problem_content_text=problem)
-                p.solution_content_richtext = sol
-            except:
-                p = Problems(problem_content_text=problem, solution_content_richtext=sol,
-                             pub_date=timezone.now())
+            p = Problems.objects.get(problem_content_text=problem)
+            p.solution_content_richtext = sol
+            p.pub_date = timezone.now()
             p.save()
             return redirect("solution", query=problem)
     else:

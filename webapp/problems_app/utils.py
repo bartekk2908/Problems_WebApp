@@ -5,6 +5,7 @@ from sklearn.metrics.pairwise import cosine_similarity
 import numpy as np
 from transformers import BertTokenizer, BertModel
 import torch
+import json
 
 
 model = BertModel.from_pretrained("dkleczek/bert-base-polish-cased-v1")
@@ -44,14 +45,15 @@ def similar_problems(problem, n):
     """
 
     def give_similarity(sen1, sen2):
-        return cosine_similarity(give_embeddings(sen1), give_embeddings(sen2))[0][0]
+        s2_embeddings = json.loads(Problems.objects.get(problem_content_text=sen2).embeddings_json)
+        return cosine_similarity(give_embeddings(sen1), np.array(s2_embeddings))[0][0]
 
     similarities = []
     p_list = Problems.objects.all()
 
     for i in range(len(p_list)):
         s = give_similarity(problem, p_list[i].problem_content_text)
-        print(f"{p_list[i].problem_content_text} -> {s}")
+        print(f"{p_list[i].problem_content_text} -> {s:.4f}")
         similarities.append(s)
     indexes = sorted(range(len(similarities)), key=lambda x: similarities[x], reverse=True)[:n]
     return np.array(list(map(lambda x: x.problem_content_text, p_list)))[indexes]

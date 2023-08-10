@@ -3,7 +3,8 @@ manage.main()
 
 from problems_app.models import Problems
 from django.utils import timezone
-from problems_app.utils import similar_problems
+from problems_app.utils import similar_problems, give_embeddings
+import json
 
 
 def reset_table():
@@ -16,10 +17,10 @@ def show_data():
 
 
 def testing_s():
-    print(similar_problems("Loro nie wiem co to amen", 3))
+    print(similar_problems("Loro nie wiem co to amen", 5))
 
 
-def enter_examples():
+def enter_examples_pl():
 
     # Lista pytań (problemy)
     pytania = [
@@ -50,10 +51,11 @@ def enter_examples():
     ]
 
     for i in range(len(pytania)):
-        Problems(id=i, problem_content_text=pytania[i], solution_content_richtext=rozwiazania[i], pub_date=timezone.now()).save()
+        Problems(id=i, problem_content_text=pytania[i], solution_content_richtext=rozwiazania[i],
+                 pub_date=timezone.now(), embeddings_json=json.dumps(give_embeddings(pytania[i]).tolist())).save()
 
 
-def enter_examples_2():
+def enter_examples_eng():
 
     # List of questions (problems)
     questions = [
@@ -84,12 +86,15 @@ def enter_examples_2():
     ]
 
     for i in range(len(questions)):
-        Problems(id=i, problem_content_text=questions[i], solution_content_richtext=solutions[i], pub_date=timezone.now()).save()
+        Problems(id=i, problem_content_text=questions[i], solution_content_richtext=solutions[i],
+                 pub_date=timezone.now(), embeddings_json=json.dumps(give_embeddings(questions[i]).tolist())).save()
 
 
 if __name__ == "__main__":
     print("\n\n")
 
-    show_data()
+    # show_data()
     # reset_table()
-    # enter_examples()
+    # enter_examples_pl()
+
+    testing_s()
