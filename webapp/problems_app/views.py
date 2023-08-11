@@ -12,12 +12,19 @@ from bs4 import BeautifulSoup
 
 def main_page(request):
 
-    url_eq = reverse("enter_query")
+    if request.method == 'POST':
+        form = Q_Form(request.POST)
+        if form.is_valid():
+            query = form.cleaned_data['data']
+            return redirect("solution", query=query)
+    else:
+        form = Q_Form()
+
     url_ep = reverse("enter_problem")
 
     context = {
-        "url_eq": url_eq,
         "url_ep": url_ep,
+        'form': form,
     }
 
     return render(request, 'problems_app/main_page.html', context=context)
@@ -50,23 +57,6 @@ def enter_problem(request):
     }
 
     return render(request, 'problems_app/enter_problem.html', context=context)
-
-
-def enter_query(request):
-
-    if request.method == 'POST':
-        form = Q_Form(request.POST)
-        if form.is_valid():
-            query = form.cleaned_data['data']
-            return redirect("solution", query=query)
-    else:
-        form = Q_Form()
-
-    context = {
-        'form': form,
-    }
-
-    return render(request, 'problems_app/enter_query.html', context=context)
 
 
 def solution(request, query):

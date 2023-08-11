@@ -1,13 +1,39 @@
 <!DOCTYPE html>
-<html lang="en">
+{% load static %}
+<html lang="pl">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'problems_app/styles.css' %}">
+    <title>System - główna strona</title>
 </head>
 <body>
-
-    <a href="{{ url_eq }}">Wyszukaj problem</a> <br />
-    <a href="{{ url_ep }}">Wprowadź rozwiązanie do problemu</a> <br />
-
+    <header class="navbar">
+        <div class="navbar-container">
+            <a href="{% url 'main_page' %}">
+                <button class="home-button">
+                    <img src="{% static 'problems_app/185038_home_house_icon.png' %}">
+                </button>
+            </a>
+        </div>
+    </header>
+    <main>
+        <div class="functions-container">
+            <div>
+                <text> Wyszukaj problem </text>
+                <form method="post">
+                {% csrf_token %}
+                {{ form.as_p}}
+                <input type="submit" value="szukaj">
+                </form>
+            </div>
+            <div>
+                <a class="" href="{{ url_ep }}">
+                    <button class="function-button">
+                        <text> Wprowadź rozwiązanie do problemu </text>
+                    </button>
+                </a>
+            </div>
+        </div>
+    </main>
 </body>
 </html>
