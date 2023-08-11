@@ -3,7 +3,8 @@ from ckeditor import fields
 
 
 class Q_Form(forms.Form):
-    data = forms.CharField(label="", max_length=200)
+    data = forms.CharField(label="", max_length=200,
+                           widget=forms.TextInput(attrs={"placeholder": " . . . "}))
 
 
 class S_edit_Form(forms.Form):

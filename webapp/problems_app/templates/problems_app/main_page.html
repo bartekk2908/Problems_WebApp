@@ -8,7 +8,7 @@
 </head>
 <body>
     <header class="navbar">
-        <div class="navbar-container">
+        <div class="navbar-con">
             <a href="{% url 'main_page' %}">
                 <button class="home-button">
                     <img src="{% static 'problems_app/185038_home_house_icon.png' %}">
@@ -17,21 +17,30 @@
         </div>
     </header>
     <main>
-        <div class="functions-container">
-            <div>
-                <text> Wyszukaj problem </text>
-                <form method="post">
-                {% csrf_token %}
-                {{ form.as_p}}
-                <input type="submit" value="szukaj">
-                </form>
-            </div>
-            <div>
-                <a class="" href="{{ url_ep }}">
-                    <button class="function-button">
-                        <text> Wprowadź rozwiązanie do problemu </text>
-                    </button>
-                </a>
+        <div class="center">
+            <div class="functions-con">
+                <div class="searching-con">
+                    <div class="text-con">
+                        <text> Wyszukaj problem </text>
+                    </div>
+                    <form method="post">
+                    {% csrf_token %}
+                    {{ form }}
+                    <input type="submit" value="Szukaj">
+                    </form>
+                </div>
+                <div>
+                    <div class="text-con">
+                        <text> lub </text>
+                    </div>
+                </div>
+                <div class="button-con">
+                    <a href="{{ url_ep }}">
+                        <button class="function-button">
+                            <text> Wprowadź rozwiązanie </text>
+                        </button>
+                    </a>
+                </div>
             </div>
         </div>
     </main>

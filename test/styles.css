@@ -1,10 +1,61 @@
-#editor {
-    border: 1px solid #ccc;
-    padding: 10px;
-    min-height: 200px;
-    font-family: Arial, sans-serif;
+/* Resetowanie marginesów i paddingów dla całej strony */
+body, h1, h2, p, ul, li {
+    margin: 0;
+    padding: 0;
 }
 
-img {
-    max-width: 100%;
+/* Ustawienie tła strony */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f0f0f0;
+}
+
+/* Styl nagłówka */
+header {
+    background-color: #007bff;
+    color: #fff;
+    text-align: center;
+    padding: 20px;
+}
+
+/* Styl głównej treści strony */
+main {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: calc(100vh - 60px); /* Wysokość ekranu minus wysokość nagłówka */
+}
+
+/* Styl kontenera wyszukiwania */
+.search-container {
+    text-align: center;
+}
+
+/* Styl pola tekstowego i przycisku */
+input[type="text"] {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin-right: 10px;
+}
+
+button {
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+
+
+
+.other-page-button {
+    text-align: center;
+    margin-top: 20px;
 }
