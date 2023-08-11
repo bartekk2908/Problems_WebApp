@@ -93,8 +93,8 @@ def enter_examples_eng():
 if __name__ == "__main__":
     print("\n\n")
 
-    # show_data()
+    show_data()
     # reset_table()
     # enter_examples_pl()
 
-    testing_s()
+    # testing_s()

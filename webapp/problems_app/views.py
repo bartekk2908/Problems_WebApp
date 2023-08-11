@@ -7,6 +7,7 @@ from .forms import Q_Form, S_edit_Form, P_Form
 from django.utils import timezone
 from .utils import give_sol, similar_problems, give_embeddings
 import json
+from bs4 import BeautifulSoup
 
 
 def main_page(request):
@@ -33,8 +34,12 @@ def enter_problem(request):
                 p = Problems.objects.get(problem_content_text=problem)
                 print("Rozwiązanie tego problemu już istnieje.")
             except:
-                p = Problems(problem_content_text=problem, solution_content_richtext=sol,
-                             pub_date=timezone.now(), embeddings_json=json.dumps(give_embeddings(problem).tolist()))
+                text_data = problem + " " + BeautifulSoup(sol, 'html.parser').get_text().replace('\n', ' ')
+                print(text_data)
+                p = Problems(problem_content_text=problem,
+                             solution_content_richtext=sol,
+                             pub_date=timezone.now(),
+                             embeddings_json=json.dumps(give_embeddings(text_data).tolist()))
                 p.save()
             return redirect("main_page")
     else:
