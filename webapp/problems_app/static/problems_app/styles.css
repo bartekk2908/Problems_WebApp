@@ -11,7 +11,7 @@ mian {
 .navbar {
     background-color: #333;
     color: #fff;
-    padding: 6px 0;
+    padding: 8px 0;
 }
 
 .navbar-con {
@@ -90,13 +90,13 @@ input[type="submit"]:hover {
     background-color: #555;
 }
 
-input[type="text"] {
+.input-query {
     padding: 10px;
     border: 1px solid #ccc;
     border-radius: 5px;
     margin-right: 10px;
     height: 14px;
-    width: 400px;
+    width: 500px;
     font-size: 20px;
 }
 
@@ -121,6 +121,23 @@ input[type="text"] {
     background-color: #555;
 }
 
-.text-con {
+/* for "enter_problem" */
 
+.prob-form {
+    padding: 20px 0 0 40px;
+}
+
+.input-problem {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin: 0 10px 0 10px;
+    height: 14px;
+    width: 550px;
+    font-size: 20px;
+}
+
+.prob-form p label {
+    color: #fff;
+    font-size: 20px;
 }
