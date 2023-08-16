@@ -13,7 +13,7 @@ class S_edit_Form(forms.Form):
 
 
 class P_Form(forms.Form):
-    pdata = forms.CharField(label="Treść problemu", max_length=200,
+    pdata = forms.CharField(label="", max_length=200,
                             widget=forms.TextInput(attrs={"placeholder": " . . . ",
                                                           "class": "input-problem"}))
-    sdata = fields.RichTextFormField(label="Rozwiązanie")
+    sdata = fields.RichTextFormField(label="")

@@ -61,7 +61,7 @@ def enter_problem(request):
 
 def solution(request, query):
 
-    n = 3
+    n = 8
     sims = similar_problems(query, n=n)
 
     problem = sims[0]

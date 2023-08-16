@@ -1,16 +1,14 @@
+
 body {
     margin: 0;
     font-family: Arial, sans-serif;
     background-color: #444;
-}
-
-mian {
-    height: 300px;
+    color: #fff;
+    font-size: 20px;
 }
 
 .navbar {
     background-color: #333;
-    color: #fff;
     padding: 8px 0;
 }
 
@@ -31,14 +29,29 @@ mian {
     transition: background 0.15s ease;
 }
 
-.home-button:hover {
-    background-color: #555;
-}
-
 .home-button img {
     width: 30px;
     height: 30px;
     filter: invert(1);
+}
+
+input[type="submit"],
+.button-con button {
+    padding: 4px 20px;
+    background-color: #333;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    height: 38px;
+    transition: background 0.15s ease;
+    font-size: 17px;
+    color: #fff;
+}
+
+.home-button:hover,
+input[type="submit"]:hover,
+.button-con button:hover  {
+    background-color: #555;
 }
 
 .center {
@@ -56,17 +69,6 @@ mian {
     padding: 70px 0 0 0;
 }
 
-.text-con {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.text-con text {
-    color: #fff;
-    font-size: 40px;
-}
-
 .searching-con form {
     display: flex;
     justify-content: center;
@@ -74,23 +76,27 @@ mian {
     margin: 20px 0;
 }
 
-input[type="submit"] {
-    padding: 4px 20px;
-    background-color: #333;
-    color: #fff;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    height: 38px;
-    transition: background 0.15s ease;
-    font-size: 17px;
+.text-con {
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
-input[type="submit"]:hover {
-    background-color: #555;
+.text-con text {
+    font-size: 40px;
 }
 
-.input-query {
+.button-con {
+    display: flex;
+    justify-content: center;
+}
+
+
+.input-con {
+    margin-bottom: 30px;
+}
+
+.input-query, .input-problem {
     padding: 10px;
     border: 1px solid #ccc;
     border-radius: 5px;
@@ -100,44 +106,49 @@ input[type="submit"]:hover {
     font-size: 20px;
 }
 
-.button-con {
-    display: flex;
-    justify-content: center;
+.main-con {
+    padding: 30px 40px 0 40px;
 }
 
-.button-con button {
-    padding: 4px 20px;
-    background-color: #333;
-    color: #fff;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    height: 38px;
-    transition: background 0.15s ease;
+.text-label {
+    margin-bottom: 10px;
+}
+
+.small-text-label {
     font-size: 17px;
+    margin-bottom: 10px;
 }
 
-.button-con button:hover {
-    background-color: #555;
+.prob-label {
+    font-size: 25px;
+    margin-top: 15px;
 }
 
-/* for "enter_problem" */
-
-.prob-form {
-    padding: 20px 0 0 40px;
-}
-
-.input-problem {
-    padding: 10px;
-    border: 1px solid #ccc;
+.sol-con {
+    background-color: #333;
+    padding: 20px;
+    padding-bottom: 40px;
+    margin: 15px 0 20px 0;
     border-radius: 5px;
-    margin: 0 10px 0 10px;
-    height: 14px;
-    width: 550px;
     font-size: 20px;
 }
 
-.prob-form p label {
-    color: #fff;
-    font-size: 20px;
+.main-con .button-con{
+    display: block;
 }
+
+.sim-prob-con {
+    margin: 20px 0 15px 15px;
+}
+
+.sim-prob {
+    color: #fff;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.sim-prob:hover {
+    text-decoration: underline;
+}
+
+

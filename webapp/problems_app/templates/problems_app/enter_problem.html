@@ -17,11 +17,24 @@
         </div>
     </header>
     <main>
-        <form method="post" class="prob-form">
+        <form method="post" class="main-con">
             {% csrf_token %}
-            {{ form.as_p }}
-            {{ form.media }}
-            <input type="submit" value="Zatwierdź rozwiązanie">
+            <div class="text-label">
+                <label for="{{ form.pdata.id_for_label }}">Treść problemu:</label>
+            </div>
+            <div class="input-con">
+                {{ form.pdata }}
+            </div>
+            <div class="text-label">
+                <label for="{{ form.sdata.id_for_label }}">Rozwiązanie:</label>
+            </div>
+            <div class="input-con">
+                {{ form.sdata }}
+                {{ form.media }}
+            </div>
+            <div class="input-con">
+                <input type="submit" value="Zatwierdź rozwiązanie">
+            </div>
         </form>
     </main>
 </body>

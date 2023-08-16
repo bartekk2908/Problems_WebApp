@@ -1,21 +1,63 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Strona Wyszukiwania</title>
-    <link rel="stylesheet" type="text/css" href="styles.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Formularz z etykietą</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background-color: #f5f5f5;
+  }
+
+  .form-container {
+    background-color: white;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    width: 300px;
+    text-align: center;
+  }
+
+  .form-label {
+    font-size: 18px;
+    margin-bottom: 10px;
+  }
+
+  .form-input {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+  }
+
+  .form-button {
+    background-color: #007bff;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+  }
+</style>
 </head>
 <body>
-    <header>
-        <h1>Moja Strona Wyszukiwania</h1>
-    </header>
-    <main>
-        <div class="search-container">
-            <input type="text" placeholder="Wpisz frazę do wyszukania">
-            <button>Wyszukaj</button>
-        </div>
-        <div class="other-page-button">
-            <a href="inna_strona.html">Inna Strona</a>
-        </div>
-    </main>
+  <div class="form-container">
+    <label for="name" class="form-label">Imię:</label>
+    <input type="text" id="name" class="form-input" placeholder="Wprowadź imię">
+
+    <label for="email" class="form-label">Email:</label>
+    <input type="email" id="email" class="form-input" placeholder="Wprowadź email">
+
+    <button class="form-button">Wyślij</button>
+  </div>
 </body>
 </html>

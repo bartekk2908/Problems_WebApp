@@ -1,24 +1,53 @@
 <!DOCTYPE html>
-<html lang="en">
+{% load static %}
+<html lang="pl">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'problems_app/styles.css' %}">
+    <title>System - główna strona</title>
 </head>
 <body>
-
-    <text>Sugerowane rozwiązanie:</text> <br /> <br />
-    <b>{{ problem }}</b> <br />
-    <div>
-        {{solution | safe}}
-    </div>
-    <br /> <br />
-    <a href="{{ enter_url }}">Edytuj to rozwiązanie</a> <br />
-    <br />
-    <text>Podobne problemy:</text> <br />
-
-    {% for p, url in list %}
-        <br /><a href="{{ url }}"> {{ p }} </a> <br />
-    {% endfor %}
-
+    <header class="navbar">
+        <div class="navbar-con">
+            <a href="{% url 'main_page' %}">
+                <button class="home-button">
+                    <img src="{% static 'problems_app/185038_home_house_icon.png' %}">
+                </button>
+            </a>
+        </div>
+    </header>
+    <main>
+        <div class="main-con">
+            <div class="small-text-label">
+                <text>Sugerowane rozwiązanie:</text>
+            </div>
+            <div class="prob-label">
+                <b>{{ problem }}</b>
+            </div>
+            <div class="sol-con">
+                {{solution | safe}}
+            </div>
+            <div class="button-con">
+                    <a href="{{ enter_url }}">
+                        <button class="function-button">
+                            <text>Edytuj to rozwiązanie</text>
+                        </button>
+                    </a>
+            </div>
+            <div>
+                <br /> <br /> <br />
+            </div>
+            <div class="text-label">
+                <text>Podobne problemy:</text>
+            </div>
+            <div>
+                {% for p, url in list %}
+                <div class="sim-prob-con">
+                    <a href="{{ url }}" class="sim-prob"> {{ p }} </a>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </main>
 </body>
 </html>
