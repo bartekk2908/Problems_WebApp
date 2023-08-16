@@ -107,7 +107,7 @@ input[type="submit"]:hover,
 }
 
 .main-con {
-    padding: 30px 40px 0 40px;
+    margin: 30px 40px 0 40px;
 }
 
 .text-label {
@@ -121,7 +121,7 @@ input[type="submit"]:hover,
 
 .prob-label {
     font-size: 25px;
-    margin-top: 15px;
+    margin: 15px 0 20px 0;
 }
 
 .sol-con {

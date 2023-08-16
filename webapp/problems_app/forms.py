@@ -9,7 +9,7 @@ class Q_Form(forms.Form):
 
 
 class S_edit_Form(forms.Form):
-     data = fields.RichTextFormField(label="Rozwiązanie")
+     data = fields.RichTextFormField(label="")
 
 
 class P_Form(forms.Form):

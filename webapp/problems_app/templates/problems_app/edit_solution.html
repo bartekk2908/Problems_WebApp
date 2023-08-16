@@ -1,19 +1,35 @@
 <!DOCTYPE html>
-<html lang="en">
+{% load static %}
+<html lang="pl">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'problems_app/styles.css' %}">
+    <title>Edytuj rozwiązanie</title>
 </head>
 <body>
-
-    <b>{{ problem }}</b> <br />
-    <form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    {{ form.media }}
-    <input type="submit" value="Zatwierdź rozwiązanie">
-    </form>
-
-
+    <header class="navbar">
+        <div class="navbar-con">
+            <a href="{% url 'main_page' %}">
+                <button class="home-button">
+                    <img src="{% static 'problems_app/185038_home_house_icon.png' %}">
+                </button>
+            </a>
+        </div>
+    </header>
+    <main>
+        <form method="post" class="main-con">
+            {% csrf_token %}
+            <div class="prob-label">
+                <b>{{ problem }}</b>
+            </div>
+            <div class="input-con">
+                {{ form.data }}
+                {{ form.media }}
+            </div>
+            <div class="input-con">
+                <input type="submit" value="Zatwierdź rozwiązanie">
+            </div>
+        </form>
+    </main>
 </body>
 </html>
