@@ -1,5 +1,7 @@
 
-body {
+/* Ogólne ustawienia */
+body
+{
     margin: 0;
     font-family: Arial, sans-serif;
     background-color: #444;
@@ -7,12 +9,16 @@ body {
     font-size: 20px;
 }
 
-.navbar {
+/* Pasek nawigacyjny, header */
+.navbar
+{
     background-color: #333;
     padding: 8px 0;
 }
 
-.navbar-con {
+/* Kontener paska nawigacyjnego */
+.navbar-con
+{
     max-width: 1200px;
     margin: 0 0;
     display: flex;
@@ -21,7 +27,9 @@ body {
     padding: 0 15px;
 }
 
-.home-button {
+/* Przycisk powrotu do strony głównej */
+.home-button
+{
     background-color: #333;
     border: none;
     border-radius: 5px;
@@ -29,14 +37,18 @@ body {
     transition: background 0.15s ease;
 }
 
-.home-button img {
+/* Obrazek przycisku powrotu do strony głównej */
+.home-button img
+{
     width: 30px;
     height: 30px;
     filter: invert(1);
 }
 
+/* Przyciski */
 input[type="submit"],
-.button-con button {
+.button-con button
+{
     padding: 4px 20px;
     background-color: #333;
     border: none;
@@ -50,53 +62,64 @@ input[type="submit"],
 
 .home-button:hover,
 input[type="submit"]:hover,
-.button-con button:hover  {
+.button-con button:hover
+{
     background-color: #555;
 }
 
-.center {
+/* Kontener wyśrodkowujący */
+.center
+{
     display: flex;
     justify-content: center;
     align-items: center;
 }
 
-.functions-con {
+/* Kontener na inne kontenery */
+.functions-con
+{
     display: grid;
     height: 90vh;
 }
 
-.searching-con {
+/* Kontener na wyszukiwarkę */
+.searching-con
+{
     padding: 70px 0 0 0;
 }
 
-.searching-con form {
+.searching-con form
+{
     display: flex;
     justify-content: center;
     align-items: center;
     margin: 20px 0;
 }
 
-.text-con {
+/* Tekst na stronie tytułowej */
+.text-con
+{
     display: flex;
     justify-content: center;
     align-items: center;
-}
-
-.text-con text {
     font-size: 40px;
 }
 
-.button-con {
+.button-con
+{
     display: flex;
     justify-content: center;
 }
 
 
-.input-con {
+.input-con
+{
     margin-bottom: 30px;
 }
 
-.input-query, .input-problem {
+/* Pola do wprowadzania tekstu */
+.input-query, .input-problem
+{
     padding: 10px;
     border: 1px solid #ccc;
     border-radius: 5px;
@@ -106,25 +129,35 @@ input[type="submit"]:hover,
     font-size: 20px;
 }
 
-.main-con {
+/* Główny kontener */
+.main-con
+{
     margin: 30px 40px 0 40px;
 }
 
-.text-label {
+/* Tekst */
+.text-label
+{
     margin-bottom: 10px;
 }
 
-.small-text-label {
+/* Mały tekst */
+.small-text-label
+{
     font-size: 17px;
     margin-bottom: 10px;
 }
 
-.prob-label {
+/* Kontener na tytuł problemu */
+.prob-label
+{
     font-size: 25px;
     margin: 15px 0 20px 0;
 }
 
-.sol-con {
+/* Kontener na rozwiązanie */
+.sol-con
+{
     background-color: #333;
     padding: 20px;
     padding-bottom: 40px;
@@ -133,22 +166,26 @@ input[type="submit"]:hover,
     font-size: 20px;
 }
 
-.main-con .button-con{
+.main-con .button-con
+{
     display: block;
 }
 
-.sim-prob-con {
+/* Pojemniki na linki */
+.sim-prob-con
+{
     margin: 20px 0 15px 15px;
 }
 
-.sim-prob {
+/* Linki do podobnych problemów */
+.sim-prob
+{
     color: #fff;
     text-decoration: none;
     font-weight: bold;
 }
 
-.sim-prob:hover {
+.sim-prob:hover
+{
     text-decoration: underline;
 }
-
-
