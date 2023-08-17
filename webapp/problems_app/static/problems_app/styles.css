@@ -9,6 +9,10 @@ body
     font-size: 20px;
 }
 
+a {
+    text-decoration: none;
+}
+
 /* Pasek nawigacyjny, header */
 .navbar
 {
@@ -35,6 +39,7 @@ body
     border-radius: 5px;
     padding: 3px 3px;
     transition: background 0.15s ease;
+    cursor: pointer;
 }
 
 /* Obrazek przycisku powrotu do strony głównej */
@@ -47,7 +52,8 @@ body
 
 /* Przyciski */
 input[type="submit"],
-.button-con button
+.button-con button,
+.nav-link button
 {
     padding: 4px 20px;
     background-color: #333;
@@ -62,7 +68,8 @@ input[type="submit"],
 
 .home-button:hover,
 input[type="submit"]:hover,
-.button-con button:hover
+.button-con button:hover,
+.nav-link button:hover
 {
     background-color: #555;
 }

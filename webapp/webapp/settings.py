@@ -140,3 +140,5 @@ CKEDITOR_CONFIGS = {
         'width': "250%",
     },
 }
+
+# X_FRAME_OPTIONS = 'ALLOWALL'

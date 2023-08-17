@@ -4,12 +4,13 @@ from django.conf.urls.static import static
 
 from . import views
 
+
 urlpatterns = [
     path("", views.main_page, name="main_page"),
     path("add_solution/", views.add_solution, name="add_solution"),
     path("search=<str:query>/", views.solution, name="solution"),
     path("search=<str:problem>/edit/", views.edit_solution, name="edit_solution"),
-    path("all_solutions/", views.all_solutions, name="all_solutions")
+    path("all_solutions/sorting=<str:sorting>/", views.all_solutions, name="all_solutions")
 ]
 
 if settings.DEBUG:

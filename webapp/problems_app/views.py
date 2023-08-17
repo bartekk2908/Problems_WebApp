@@ -21,10 +21,12 @@ def main_page(request):
         form = Q_Form()
 
     url_ep = reverse("add_solution")
+    all_url = reverse('all_solutions', kwargs={"sorting": 'name'})
 
     context = {
         "url_ep": url_ep,
         'form': form,
+        'all_url': all_url,
     }
 
     return render(request, 'problems_app/main_page.html', context=context)
@@ -103,9 +105,9 @@ def edit_solution(request, problem):
     return render(request, 'problems_app/edit_solution.html', context=context)
 
 
-def all_solutions(request):
+def all_solutions(request, sorting):
 
-    alls = give_all_problems()
+    alls = give_all_problems(sorting_by=sorting)
 
     all_list = zip(alls, list(map(lambda x: reverse("solution", kwargs={"query": x}), alls)))
 

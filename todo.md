@@ -2,9 +2,9 @@
 
 - obsłużenie próby dodania istniejącego już problemu
 - lista wszystkich rozwiązań
-- - przycisk na pasku nawigacyjnym
 - - lista jako kafelki
 - - data dodania na liście
+- - sortowanie
 - system logowania:
 - - logowanie się
 - - tabela użytkowników
