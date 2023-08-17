@@ -5,7 +5,7 @@ from django.urls import reverse
 from .models import Problems
 from .forms import Q_Form, S_edit_Form, P_Form
 from django.utils import timezone
-from .utils import give_sol, similar_problems, give_embeddings
+from .utils import give_sol, give_similar_problems, give_embeddings, give_all_problems
 import json
 from bs4 import BeautifulSoup
 
@@ -20,7 +20,7 @@ def main_page(request):
     else:
         form = Q_Form()
 
-    url_ep = reverse("enter_problem")
+    url_ep = reverse("add_solution")
 
     context = {
         "url_ep": url_ep,
@@ -30,7 +30,7 @@ def main_page(request):
     return render(request, 'problems_app/main_page.html', context=context)
 
 
-def enter_problem(request):
+def add_solution(request):
 
     if request.method == 'POST':
         form = P_Form(request.POST)
@@ -56,13 +56,13 @@ def enter_problem(request):
         'form': form,
     }
 
-    return render(request, 'problems_app/enter_problem.html', context=context)
+    return render(request, 'problems_app/add_solution.html', context=context)
 
 
 def solution(request, query):
 
     n = 10
-    sims = similar_problems(query, n=n)
+    sims = give_similar_problems(query, n=n)
 
     problem = sims[0]
     sol = give_sol(problem)
@@ -101,3 +101,16 @@ def edit_solution(request, problem):
     }
 
     return render(request, 'problems_app/edit_solution.html', context=context)
+
+
+def all_solutions(request):
+
+    alls = give_all_problems()
+
+    all_list = zip(alls, list(map(lambda x: reverse("solution", kwargs={"query": x}), alls)))
+
+    context = {
+        'list': all_list,
+    }
+
+    return render(request, 'problems_app/all_solutions.html', context=context)

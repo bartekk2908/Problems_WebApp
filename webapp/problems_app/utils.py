@@ -30,7 +30,7 @@ def give_embeddings(sen):
     return embeddings
 
 
-def similar_problems(problem, n):
+def give_similar_problems(problem, n):
 
     """
     def give_similarity_old(sen1, sen2):
@@ -57,3 +57,12 @@ def similar_problems(problem, n):
         similarities.append(s)
     indexes = sorted(range(len(similarities)), key=lambda x: similarities[x], reverse=True)[:n]
     return np.array(list(map(lambda x: x.problem_content_text, p_list)))[indexes]
+
+
+def give_all_problems(sorting_by_date=False):
+    p_list = Problems.objects.all()
+    p_list = p_list.order_by("pub_date") if sorting_by_date else p_list.order_by("problem_content_text")
+
+    a = np.array(list(map(lambda x: x.problem_content_text, p_list)))
+    print(a)
+    return a

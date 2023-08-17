@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="{% static 'problems_app/styles.css' %}">
+    <title>Wszystkie problemy</title>
+</head>
+<body>
+    <header class="navbar">
+        <div class="navbar-con">
+            <a href="{% url 'main_page' %}">
+                <button class="home-button">
+                    <img src="{% static 'problems_app/185038_home_house_icon.png' %}">
+                </button>
+            </a>
+        </div>
+    </header>
+    <main>
+        <div class="main-con">
+            {% for p, url in list %}
+            <br />
+            <div class="sim-prob-con">
+                    <a href="{{ url }}" class="sim-prob"> {{ p }} </a>
+            </div>
+            {% endfor %}
+            <br /> <br />
+        </div>
+    </main>
+</body>
+</html>
