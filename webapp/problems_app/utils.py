@@ -70,6 +70,6 @@ def give_all_problems(sorting_by=None, direction='asc'):
     try:
         p_list = p_list.order_by(sort_types[sorting_by][direction])
     except KeyError:
-        p_list = p_list.order_by(sort_types["name"])
+        p_list = p_list.order_by(sort_types["name"]["asc"])
 
     return np.array(list(map(lambda x: x.problem_content_text, p_list)))

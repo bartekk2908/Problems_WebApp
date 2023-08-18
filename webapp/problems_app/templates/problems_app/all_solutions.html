@@ -14,7 +14,7 @@
                     <img src="{% static 'problems_app/185038_home_house_icon.png' %}">
                 </button>
             </a>
-            <a href="{% url 'all_solutions' 'name' %}" class="nav-link">
+            <a href="{% url 'all_solutions' 'name' 'asc' %}" class="nav-link">
                 <button>
                     <text> Lista rozwiązań </text>
                 </button>
@@ -26,31 +26,30 @@
             <div class="small-text-label">
                 <text>Sortuj:</text>
             </div>
-            <div class="button-con">
-                <a href="{% url 'all_solutions' 'name' %}">
-                        <button class="function-button">
+            <div class="sort-button-con">
+                <a href="{% url 'all_solutions' 'name' direction %}" class="first-button">
+                        <button>
                             <text>nazwa</text>
                         </button>
                 </a>
-                <a href="{% url 'all_solutions' 'date' %}">
-                        <button class="function-button">
-                            <text>data</text>
-                        </button>
-                </a>
-            </div>
-            <div class="button-con">
-                <a href="{% url 'all_solutions' 'name' %}">
-                        <button class="function-button">
+                <a href="{% url 'all_solutions' sorting 'asc' %}" class="second-button">
+                        <button>
                             <text>rosnąco</text>
                         </button>
                 </a>
-                <a href="{% url 'all_solutions' 'date' %}">
-                        <button class="function-button">
+            </div>
+            <div class="sort-button-con">
+                <a href="{% url 'all_solutions' 'date' direction %}" class="first-button">
+                        <button>
+                            <text>data</text>
+                        </button>
+                </a>
+                <a href="{% url 'all_solutions' sorting 'desc' %}" class="second-button">
+                        <button>
                             <text>malejąco</text>
                         </button>
                 </a>
             </div>
-            <br />
             {% for p, url in list %}
             <br />
             <div class="sim-prob-con">

@@ -9,7 +9,9 @@ body
     font-size: 20px;
 }
 
-a {
+/* Usunięcie podkreślenia w linkach */
+a
+{
     text-decoration: none;
 }
 
@@ -53,7 +55,8 @@ a {
 /* Przyciski */
 input[type="submit"],
 .button-con button,
-.nav-link button
+.nav-link button,
+.sort-button-con button
 {
     padding: 4px 20px;
     background-color: #333;
@@ -64,12 +67,15 @@ input[type="submit"],
     transition: background 0.15s ease;
     font-size: 17px;
     color: #fff;
+    text-align: center;
 }
 
+/* Płynna zmiana koloru po najechaniu kursorem */
 .home-button:hover,
 input[type="submit"]:hover,
 .button-con button:hover,
-.nav-link button:hover
+.nav-link button:hover,
+.sort-button-con button:hover
 {
     background-color: #555;
 }
@@ -112,12 +118,36 @@ input[type="submit"]:hover,
     font-size: 40px;
 }
 
+/* Kontener na przycisk */
 .button-con
 {
     display: flex;
     justify-content: center;
 }
 
+/* Kontener na przyciski sortowania */
+.sort-button-con
+{
+    display: flex;
+    align-items: left;
+}
+
+.first-button,
+.first-button button
+{
+    width: 90px;
+}
+
+.second-button,
+.second-button button
+{
+    width: 120px;
+}
+
+.sort-button-con a
+{
+    margin: 2px 3px 2px 0;
+}
 
 .input-con
 {

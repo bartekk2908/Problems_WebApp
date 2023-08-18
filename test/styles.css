@@ -1,29 +1,48 @@
-body {
-    font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 0;
+/* Resetowanie styli dla przycisków */
+button {
+  margin: 0;
+  padding: 0;
+  border: none;
+  background: none;
+  font-size: inherit;
+  font-family: inherit;
+  cursor: pointer;
 }
 
-.form-container {
-    max-width: 400px;
-    margin: 0 auto;
-    padding: 20px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
+/* Kontener przycisków */
+.button-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between; /* Nowa właściwość */
+  align-items: flex-start;
+  margin-top: 20px;
+  height: 100vh; /* Dodajemy wysokość kontenera na całą wysokość ekranu */
+  padding: 20px; /* Dodajemy odstępy */
 }
 
-.input-container {
-    margin-bottom: 15px;
+/* Grupa przycisków */
+.button-group {
+  display: flex;
 }
 
-label {
-    display: block;
-    margin-bottom: 5px;
+/* Grupa przycisków po lewej stronie */
+.left-group {
+  justify-content: flex-start; /* Nowa właściwość */
 }
 
-input[type="text"] {
-    width: 100%;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
+/* Grupa przycisków po prawej stronie */
+.right-group {
+  justify-content: flex-end; /* Nowa właściwość */
+}
+
+/* Styl dla przycisków */
+.custom-button {
+  width: 200px;
+  margin: 5px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  background-color: #f0f0f0;
+  color: #333;
+  font-size: 16px;
+  text-align: center;
 }
