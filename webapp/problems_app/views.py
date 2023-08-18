@@ -5,7 +5,7 @@ from django.urls import reverse
 from .models import Problems
 from .forms import Q_Form, S_edit_Form, P_Form
 from django.utils import timezone
-from .utils import give_sol, give_similar_problems, give_embeddings, give_all_problems
+from .utils import *
 import json
 from bs4 import BeautifulSoup
 
@@ -64,39 +64,50 @@ def solution(request, query):
     n = 10
     sims = give_similar_problems(query, n=n)
 
-    problem = sims[0]
-    sol = give_sol(problem)
+    pk = sims[0]
+    prob, sol = give_prob(pk), give_sol(pk)
 
-    enter_url = reverse("edit_solution", kwargs={"problem": problem})
+    edit_url = reverse("edit_solution", kwargs={"problem": prob})
 
     sim_list = zip(sims[1:], list(map(lambda x: reverse("solution", kwargs={"query": x}), sims[1:])))
 
     context = {
-        'problem': problem,
+        'problem': prob,
         'solution': sol,
-        'enter_url': enter_url,
+        'edit_url': edit_url,
         'list': sim_list,
     }
 
     return render(request, 'problems_app/solution.html', context=context)
 
 
-def edit_solution(request, problem):
+def edit_solution(request, p_id):
+    prob = give_prob(p_id)
 
     if request.method == 'POST':
         form = S_edit_Form(request.POST)
         if form.is_valid():
+
             sol = form.cleaned_data['data']
-            p = Problems.objects.get(problem_content_text=problem)
-            p.solution_content_richtext = sol
-            p.pub_date = timezone.now()
+
+            text_data = prob + " " + BeautifulSoup(sol, 'html.parser').get_text().replace('\n', ' ')
+            print(text_data)
+
+            p_id = Problems.objects.get(problem_content_text=prob).problem_id
+            print(p_id)
+            p = Problems(problem_id=p_id,
+                         problem_content_text=prob,
+                         solution_content_richtext=sol,
+                         pub_date=timezone.now(),
+                         embeddings_json=json.dumps(give_embeddings(text_data).tolist()))
             p.save()
-            return redirect("solution", query=problem)
+
+            return redirect("solution", query=prob)
     else:
-        form = S_edit_Form(initial={"data": give_sol(problem)})
+        form = S_edit_Form(initial={"data": give_sol(p_id)})
 
     context = {
-        'problem': problem,
+        'problem': prob,
         'form': form,
     }
 

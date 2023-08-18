@@ -3,7 +3,7 @@ manage.main()
 
 from problems_app.models import Problems
 from django.utils import timezone
-from problems_app.utils import similar_problems, give_embeddings
+from problems_app.utils import give_similar_problems, give_embeddings
 import json
 
 
@@ -17,7 +17,7 @@ def show_data():
 
 
 def testing_s():
-    print(similar_problems("Loro nie wiem co to amen", 5))
+    print(give_similar_problems("Loro nie wiem co to amen", 5))
 
 
 def enter_examples_pl():
@@ -96,5 +96,3 @@ if __name__ == "__main__":
     show_data()
     # reset_table()
     # enter_examples_pl()
-
-    # testing_s()

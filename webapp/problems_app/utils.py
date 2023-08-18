@@ -12,9 +12,17 @@ model = BertModel.from_pretrained("dkleczek/bert-base-polish-cased-v1")
 tokenizer = BertTokenizer.from_pretrained("dkleczek/bert-base-polish-cased-v1")
 
 
-def give_sol(problem):
+def give_prob(pk):
     try:
-        sol = Problems.objects.get(problem_content_text=problem).solution_content_richtext
+        sol = Problems.objects.get(pk=pk).problem_content_text
+    except Problems.DoesNotExist:
+        sol = ""
+    return sol
+
+
+def give_sol(pk):
+    try:
+        sol = Problems.objects.get(pk=pk).solution_content_richtext
     except Problems.DoesNotExist:
         sol = ""
     return sol
@@ -30,7 +38,7 @@ def give_embeddings(sen):
     return embeddings
 
 
-def give_similar_problems(problem, n):
+def give_similar_problems(query, n):
 
     """
     def give_similarity_old(sen1, sen2):
@@ -44,19 +52,19 @@ def give_similar_problems(problem, n):
         return np.min(similarity)
     """
 
-    def give_similarity(sen1, sen2):
-        s2_embeddings = json.loads(Problems.objects.get(problem_content_text=sen2).embeddings_json)
-        return cosine_similarity(give_embeddings(sen1), np.array(s2_embeddings))[0][0]
+    def give_similarity(emb1, emb2):
+        return cosine_similarity(emb1, emb2)[0][0]
 
     similarities = []
     p_list = Problems.objects.all()
 
     for i in range(len(p_list)):
-        s = give_similarity(problem, p_list[i].problem_content_text)
+        emb2 = np.array(json.loads(p_list[i].embeddings_json))
+        s = give_similarity(give_embeddings(query), emb2)
         print(f"{p_list[i].problem_content_text} -> {s:.4f}")
         similarities.append(s)
     indexes = sorted(range(len(similarities)), key=lambda x: similarities[x], reverse=True)[:n]
-    return np.array(list(map(lambda x: x.problem_content_text, p_list)))[indexes]
+    return np.array(list(map(lambda x: x.pk, p_list)))[indexes]
 
 
 def give_all_problems(sorting_by=None, direction='asc'):
@@ -72,4 +80,4 @@ def give_all_problems(sorting_by=None, direction='asc'):
     except KeyError:
         p_list = p_list.order_by(sort_types["name"]["asc"])
 
-    return np.array(list(map(lambda x: x.problem_content_text, p_list)))
+    return np.array(list(map(lambda x: x.pk, p_list)))
