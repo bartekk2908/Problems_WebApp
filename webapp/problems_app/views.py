@@ -67,7 +67,7 @@ def solution(request, query):
     pk = sims[0]
     prob, sol = give_prob(pk), give_sol(pk)
 
-    edit_url = reverse("edit_solution", kwargs={"problem": prob})
+    edit_url = reverse("edit_solution", kwargs={"p_id": pk})
 
     sim_list = zip(sims[1:], list(map(lambda x: reverse("solution", kwargs={"query": x}), sims[1:])))
 
