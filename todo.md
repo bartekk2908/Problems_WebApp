@@ -2,6 +2,8 @@
 
 - obsłużenie przypadku gdy baza danych jest pusta
 
+- obsłużenie próby dodania rozwiązania do problemu, które już istnieje
+
 - obsłużenie próby niezmienienia niczego podczas edycji rozwiązania
 
 - lista wszystkich rozwiązań:
@@ -16,6 +18,8 @@
 - - użytkownik może zapisywać sobie rozwiązania
 
 - wprowadzanie i porównywanie obrazów
-- - decyzja jakie cechy chcemy brać pod uwagę
+- - decyzja, jakie cechy chcemy brać pod uwagę
+
+- próba implementacji Haystack'a i Elasticsearch
 
 - data ostatniej edycji wyświetlona
