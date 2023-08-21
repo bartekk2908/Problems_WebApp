@@ -8,6 +8,7 @@ class Problems(models.Model):
     solution_content_richtext = fields.RichTextField(default="")
     pub_date = models.DateTimeField("date published")
     embeddings_json = models.JSONField(default=None)
+    is_newest = models.BooleanField(default=False)
 
     def __str__(self):
         return f"Problem_ID: {self.problem_id}, " \

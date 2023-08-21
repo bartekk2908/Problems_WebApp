@@ -1,10 +1,11 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from django.urls import reverse
+from django.utils import timezone
+from django.db import transaction
 
 from .models import Problems
 from .forms import Q_Form, S_edit_Form, P_Form
-from django.utils import timezone
 from .utils import *
 import json
 from bs4 import BeautifulSoup
@@ -20,10 +21,10 @@ def main_page(request):
     else:
         form = Q_Form()
 
-    url_ep = reverse("add_solution")
+    url_as = reverse("add_solution")
 
     context = {
-        "url_ep": url_ep,
+        "url_as": url_as,
         'form': form,
     }
 
@@ -35,18 +36,19 @@ def add_solution(request):
     if request.method == 'POST':
         form = P_Form(request.POST)
         if form.is_valid():
-            problem = form.cleaned_data['pdata']
+            prob = form.cleaned_data['pdata']
             sol = form.cleaned_data['sdata']
             try:
-                p = Problems.objects.get(problem_content_text=problem)
+                p = Problems.objects.get(problem_content_text=prob)
                 print("Rozwiązanie tego problemu już istnieje.")
-            except:
-                text_data = problem + " " + BeautifulSoup(sol, 'html.parser').get_text().replace('\n', ' ')
+            except Problems.DoesNotExist:
+                text_data = give_text_data(prob, sol)
                 print(text_data)
-                p = Problems(problem_content_text=problem,
+                p = Problems(problem_content_text=prob,
                              solution_content_richtext=sol,
                              pub_date=timezone.now(),
-                             embeddings_json=json.dumps(give_embeddings(text_data).tolist()))
+                             embeddings_json=json.dumps(give_embeddings(text_data).tolist()),
+                             is_newest=True)
                 p.save()
             return redirect("main_page")
     else:
@@ -59,17 +61,24 @@ def add_solution(request):
     return render(request, 'problems_app/add_solution.html', context=context)
 
 
-def solution(request, query):
+def solution(request, query=None, p_id=None):
 
-    n = 10
-    sims = give_similar_problems(query, n=n)
+    n = len(give_all_problems())
 
-    pk = sims[0]
-    prob, sol = give_prob(pk), give_sol(pk)
+    if query is not None:
+        sims = give_similar_problems(n, query)
+        pk = sims[0]
+        others = sims[1:]
+    else:
+        pk = give_newest_problem(p_id)
+        others = give_similar_problems(n, give_prob_text(pk), pk=pk)
 
-    edit_url = reverse("edit_solution", kwargs={"p_id": pk})
+    prob, sol = give_prob_text(pk), give_sol_text(pk)
 
-    sim_list = zip(sims[1:], list(map(lambda x: reverse("solution", kwargs={"query": x}), sims[1:])))
+    edit_url = reverse("edit_solution", kwargs={"p_id": give_p_id(pk)})
+
+    sim_list = zip(list(map(lambda x: give_prob_text(x), others)),
+                   list(map(lambda x: reverse("solution", kwargs={"p_id": give_p_id(x)}), others)))
 
     context = {
         'problem': prob,
@@ -82,7 +91,8 @@ def solution(request, query):
 
 
 def edit_solution(request, p_id):
-    prob = give_prob(p_id)
+    pk = give_newest_problem(p_id)
+    prob = give_prob_text(pk)
 
     if request.method == 'POST':
         form = S_edit_Form(request.POST)
@@ -90,21 +100,24 @@ def edit_solution(request, p_id):
 
             sol = form.cleaned_data['data']
 
-            text_data = prob + " " + BeautifulSoup(sol, 'html.parser').get_text().replace('\n', ' ')
+            text_data = give_text_data(prob, sol)
             print(text_data)
 
-            p_id = Problems.objects.get(problem_content_text=prob).problem_id
-            print(p_id)
-            p = Problems(problem_id=p_id,
-                         problem_content_text=prob,
-                         solution_content_richtext=sol,
-                         pub_date=timezone.now(),
-                         embeddings_json=json.dumps(give_embeddings(text_data).tolist()))
-            p.save()
+            with transaction.atomic():
+                old = Problems.objects.get(problem_id=p_id, is_newest=True)
+                old.is_newest = False
+                old.save()
+                new = Problems(problem_id=p_id,
+                               problem_content_text=prob,
+                               solution_content_richtext=sol,
+                               pub_date=timezone.now(),
+                               embeddings_json=json.dumps(give_embeddings(text_data).tolist()),
+                               is_newest=True)
+                new.save()
 
-            return redirect("solution", query=prob)
+            return redirect("solution", p_id=p_id)
     else:
-        form = S_edit_Form(initial={"data": give_sol(p_id)})
+        form = S_edit_Form(initial={"data": give_sol_text(give_newest_problem(p_id))})
 
     context = {
         'problem': prob,
@@ -118,7 +131,8 @@ def all_solutions(request, sorting, direction):
 
     alls = give_all_problems(sorting_by=sorting, direction=direction)
 
-    all_list = zip(alls, list(map(lambda x: reverse("solution", kwargs={"query": x}), alls)))
+    all_list = zip(list(map(lambda x: give_prob_text(x), alls)),
+                   list(map(lambda x: reverse("solution", kwargs={"p_id": give_p_id(x)}), alls)))
 
     context = {
         'list': all_list,

@@ -1,13 +1,12 @@
 # TODO
 
-- obsłużenie próby dodania problemu o takiej samej nazwie
+- obsłużenie przypadku gdy baza danych jest pusta
 
 - obsłużenie próby niezmienienia niczego podczas edycji rozwiązania
 
 - lista wszystkich rozwiązań:
 - - lista jako kafelki
 - - data dodania na liście
-- - wyświetlanie na liście tylko ostatnich wersji rozwiązań
 
 - system logowania:
 - - logowanie się

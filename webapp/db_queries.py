@@ -5,6 +5,7 @@ from problems_app.models import Problems
 from django.utils import timezone
 from problems_app.utils import give_similar_problems, give_embeddings
 import json
+from bs4 import BeautifulSoup
 
 
 def reset_table():
@@ -12,7 +13,10 @@ def reset_table():
 
 
 def show_data():
-    print(Problems.objects.all())
+    problems = Problems.objects.all()
+    for p in problems:
+        print(p)
+
     print(Problems.objects.values_list('pk', flat=True))
 
 
@@ -51,48 +55,18 @@ def enter_examples_pl():
     ]
 
     for i in range(len(pytania)):
-        Problems(id=i, problem_content_text=pytania[i], solution_content_richtext=rozwiazania[i],
-                 pub_date=timezone.now(), embeddings_json=json.dumps(give_embeddings(pytania[i]).tolist())).save()
-
-
-def enter_examples_eng():
-
-    # List of questions (problems)
-    questions = [
-        "Sluggish website performance.",
-        "Lack of task organization.",
-        "Low conversion rate on the store website.",
-        "Lack of security in the web application.",
-        "Low visibility in search results.",
-        "Long loading time for mobile application.",
-        "Complex registration process.",
-        "Low user engagement in premium features.",
-        "Increased spam on the social media platform.",
-        "Lack of consistency in the user interface."
-    ]
-
-    # List of solutions
-    solutions = [
-        "Optimize images and code, leverage browser caching.",
-        "Use project management tools like Trello or Asana.",
-        "Improve layout and design, implement more persuasive CTAs.",
-        "Implement authentication and authorization system, regularly update dependencies.",
-        "Apply SEO optimization strategies, create valuable content.",
-        "Optimize files and resources, use asynchronous loading techniques.",
-        "Simplify forms, implement registration via social accounts.",
-        "Provide appealing benefits, offer trial periods.",
-        "Implement anti-spam mechanisms, apply content moderation.",
-        "Create consistent design guidelines, use shared components."
-    ]
-
-    for i in range(len(questions)):
-        Problems(id=i, problem_content_text=questions[i], solution_content_richtext=solutions[i],
-                 pub_date=timezone.now(), embeddings_json=json.dumps(give_embeddings(questions[i]).tolist())).save()
+        text_data = pytania[i] + " " + BeautifulSoup(rozwiazania[i], 'html.parser').get_text().replace('\n', ' ')
+        Problems(id=i, problem_content_text=pytania[i],
+                 solution_content_richtext=rozwiazania[i],
+                 pub_date=timezone.now(),
+                 embeddings_json=json.dumps(give_embeddings(pytania[i] + " " + rozwiazania[i]).tolist()),
+                 is_newest=True).save()
 
 
 if __name__ == "__main__":
     print("\n\n")
 
     show_data()
-    # reset_table()
-    # enter_examples_pl()
+    reset_table()
+    enter_examples_pl()
+    show_data()
