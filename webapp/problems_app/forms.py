@@ -4,8 +4,12 @@ from ckeditor import fields
 
 class Q_Form(forms.Form):
     data = forms.CharField(label="", max_length=200,
-                           widget=forms.TextInput(attrs={"placeholder": " . . . ",
+                           widget=forms.TextInput(attrs={"placeholder": " wpisz frazę",
                                                          "class": "input-query"}))
+
+
+class Image_Form(forms.Form):
+    image = forms.ImageField(label="")
 
 
 class S_edit_Form(forms.Form):

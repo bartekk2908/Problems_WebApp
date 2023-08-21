@@ -4,28 +4,35 @@ from django.urls import reverse
 from django.utils import timezone
 from django.db import transaction
 
-from .models import Problems
-from .forms import Q_Form, S_edit_Form, P_Form
+from .forms import Q_Form, Image_Form, S_edit_Form, P_Form
 from .utils import *
 import json
-from bs4 import BeautifulSoup
+from PIL import Image
 
 
 def main_page(request):
 
     if request.method == 'POST':
         form = Q_Form(request.POST)
-        if form.is_valid():
+        im_form = Image_Form(request.POST, request.FILES)
+        if form.is_valid() and im_form.is_valid():
             query = form.cleaned_data['data']
+
+            file = im_form.cleaned_data['image']
+            im = Image.open(file)
+            im.show()
+
             return redirect("solution", query=query)
     else:
         form = Q_Form()
+        im_form = Image_Form
 
     url_as = reverse("add_solution")
 
     context = {
         "url_as": url_as,
         'form': form,
+        'im_form': im_form,
     }
 
     return render(request, 'problems_app/main_page.html', context=context)

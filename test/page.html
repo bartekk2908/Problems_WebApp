@@ -1,21 +1,58 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="styles.css">
-  <title>Przyciski</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Przesyłanie obrazu z tekstem</title>
+    <style>
+        #search-box {
+            border: 2px dashed #ccc;
+            padding: 20px;
+            text-align: center;
+        }
+    </style>
 </head>
 <body>
-  <div class="button-container">
-    <div class="button-group left-group">
-      <button class="custom-button">Przycisk 1</button>
-      <button class="custom-button">Inny przycisk</button>
+    <div id="search-box">
+        <p>Przeciągnij i upuść obraz lub wpisz tekst:</p>
+        <input type="text" id="search-text" placeholder="Wpisz tekst...">
+        <input type="file" id="image-input" accept="image/*">
     </div>
-    <div class="button-group right-group">
-      <button class="custom-button">Przycisk 3</button>
-      <button class="custom-button">Kolejny przycisk</button>
-    </div>
-  </div>
+    <script>
+        const searchBox = document.getElementById('search-box');
+        const searchText = document.getElementById('search-text');
+        const imageInput = document.getElementById('image-input');
+
+        searchBox.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            searchBox.classList.add('active');
+        });
+
+        searchBox.addEventListener('dragleave', () => {
+            searchBox.classList.remove('active');
+        });
+
+        searchBox.addEventListener('drop', (e) => {
+            e.preventDefault();
+            searchBox.classList.remove('active');
+            handleImageDrop(e.dataTransfer.files[0]);
+        });
+
+        imageInput.addEventListener('change', () => {
+            handleImageDrop(imageInput.files[0]);
+        });
+
+        function handleImageDrop(file) {
+            if (file && file.type.startsWith('image/')) {
+                // Tutaj możesz przetworzyć przesłany obraz
+                console.log('Przesłany obraz:', file);
+            }
+        }
+
+        searchText.addEventListener('input', () => {
+            // Tutaj możesz obsłużyć zmiany w polu tekstu
+            console.log('Wpisany tekst:', searchText.value);
+        });
+    </script>
 </body>
 </html>
