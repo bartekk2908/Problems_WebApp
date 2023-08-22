@@ -13,7 +13,6 @@ class Problems(models.Model):
     def __str__(self):
         return f"Problem_ID: {self.problem_id}, " \
                f"Problem: {self.problem_content_text}, " \
-               f"Solution: {self.solution_content_richtext}, " \
                f"Publish Date: {self.pub_date}"
 
     def save(self, *args, **kwargs):
@@ -24,6 +23,14 @@ class Problems(models.Model):
             else:
                 self.problem_id = 1
         super(Problems, self).save(*args, **kwargs)
+
+
+class Images(models.Model):
+    problems_fk = models.ForeignKey(Problems, on_delete=models.CASCADE)
+    image_richtext = fields.RichTextField(default="")
+
+    def __str__(self):
+        return f"Key: {self.problems_fk.pk}, "
 
 
 """

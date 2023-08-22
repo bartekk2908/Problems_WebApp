@@ -8,9 +8,21 @@ class Q_Form(forms.Form):
                                                          "class": "input-query"}))
     image = forms.ImageField(label="")
 
+    def __init__(self, *args, **kwargs):
+        super(Q_Form, self).__init__(*args, **kwargs)
+        self.fields['data'].required = False
+        self.fields['image'].required = False
+
+    def clean(self):
+        data = self.cleaned_data.get('data')
+        image = self.cleaned_data.get('image')
+        if not data and not image:
+            raise forms.ValidationError('One of fields is required')
+        return self.cleaned_data
+
 
 class S_edit_Form(forms.Form):
-     data = fields.RichTextFormField(label="")
+    data = fields.RichTextFormField(label="")
 
 
 class P_Form(forms.Form):

@@ -18,8 +18,9 @@
 - - użytkownik może zapisywać sobie rozwiązania
 
 - wprowadzanie i porównywanie obrazów
-- - decyzja, jakie cechy chcemy brać pod uwagę
-- - pole do przesyłania obrazu
+- - pole do przesyłania obrazu - wygląd
+- - przypadek kiedy nie ma obrazów w bazie
+- - mechanizm
 
 - próba implementacji Haystack'a i Elasticsearch
 

@@ -1,4 +1,4 @@
-from .models import Problems
+from .models import Problems, Images
 
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
@@ -13,7 +13,7 @@ model = BertModel.from_pretrained("dkleczek/bert-base-polish-cased-v1")
 tokenizer = BertTokenizer.from_pretrained("dkleczek/bert-base-polish-cased-v1")
 
 
-def give_prob_text(pk):
+def get_prob_text(pk):
     try:
         prob = Problems.objects.get(pk=pk).problem_content_text
     except Problems.DoesNotExist:
@@ -21,12 +21,21 @@ def give_prob_text(pk):
     return prob
 
 
-def give_sol_text(pk):
+def get_sol_text(pk):
     try:
         sol = Problems.objects.get(pk=pk).solution_content_richtext
     except Problems.DoesNotExist:
         sol = ""
     return sol
+
+
+def get_p_id(pk):
+    try:
+        p_id = Problems.objects.get(pk=pk).problem_id
+        return p_id
+    except Problems.DoesNotExist:
+        print("Nie można znaleźć problemu o tym pk.")
+        return None
 
 
 def give_embeddings(sen):
@@ -38,7 +47,7 @@ def give_embeddings(sen):
     return embeddings
 
 
-def give_similar_problems(n, query, pk=-1):
+def get_similar_problems(n, query, pk=-1):
 
     """
     def give_similarity_old(sen1, sen2):
@@ -69,7 +78,7 @@ def give_similar_problems(n, query, pk=-1):
     return np.array(list(map(lambda x: x.pk, p_list)))[indexes]
 
 
-def give_all_problems(sorting_by=None, direction='asc'):
+def get_all_problems(sorting_by=None, direction='asc'):
     p_list = Problems.objects.filter(is_newest=True)
 
     sort_types = {
@@ -85,7 +94,7 @@ def give_all_problems(sorting_by=None, direction='asc'):
     return np.array(list(map(lambda x: x.pk, p_list)))
 
 
-def give_newest_problem(p_id):
+def get_newest_problem(p_id):
     try:
         pk = Problems.objects.get(problem_id=p_id, is_newest=True).pk
         return pk
@@ -94,15 +103,16 @@ def give_newest_problem(p_id):
         return None
 
 
-def give_p_id(pk):
-    try:
-        p_id = Problems.objects.get(pk=pk).problem_id
-        return p_id
-    except Problems.DoesNotExist:
-        print("Nie można znaleźć problemu o tym pk.")
-        return None
-
-
-def give_text_data(prob, sol):
+def get_text_data(prob, sol):
     return prob + " " + BeautifulSoup(sol, 'html.parser').get_text().replace('\n', ' ')
 
+
+def save_images(richtext, problem):
+    images = BeautifulSoup(richtext, 'html.parser').find_all('img')
+    for im in images:
+        i = Images(problems_fk=problem, image_richtext=str(im))
+        i.save()
+
+
+def get_similar_images(n, image):
+    pass

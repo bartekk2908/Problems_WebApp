@@ -1,27 +1,24 @@
 import manage
 manage.main()
 
-from problems_app.models import Problems
+from problems_app.models import Problems, Images
 from django.utils import timezone
-from problems_app.utils import give_similar_problems, give_embeddings
+from problems_app.utils import give_embeddings
 import json
 from bs4 import BeautifulSoup
+import imgkit
 
 
-def reset_table():
-    Problems.objects.all().delete()
+def reset_table(table):
+    table.objects.all().delete()
 
 
-def show_data():
-    problems = Problems.objects.all()
-    for p in problems:
-        print(p)
+def show_data(table):
+    rows = table.objects.all()
+    for d in rows:
+        print(d)
 
-    print(Problems.objects.values_list('pk', flat=True))
-
-
-def testing_s():
-    print(give_similar_problems("Loro nie wiem co to amen", 5))
+    print(table.objects.values_list('pk', flat=True))
 
 
 def enter_examples_pl():
@@ -56,17 +53,30 @@ def enter_examples_pl():
 
     for i in range(len(pytania)):
         text_data = pytania[i] + " " + BeautifulSoup(rozwiazania[i], 'html.parser').get_text().replace('\n', ' ')
-        Problems(id=i, problem_content_text=pytania[i],
+        Problems(id=i,
+                 problem_content_text=pytania[i],
                  solution_content_richtext=rozwiazania[i],
                  pub_date=timezone.now(),
                  embeddings_json=json.dumps(give_embeddings(pytania[i] + " " + rozwiazania[i]).tolist()),
                  is_newest=True).save()
 
 
+def show_images():
+    images = Images.objects.all()
+    for im in images:
+        img = imgkit.from_string(im.image_richtext, False)
+        img.show()
+
+
 if __name__ == "__main__":
     print("\n\n")
 
-    show_data()
-    reset_table()
+    show_data(Problems)
+    show_data(Images)
+
+    reset_table(Problems)
+    reset_table(Images)
+
     enter_examples_pl()
-    show_data()
+
+    # show_images()
