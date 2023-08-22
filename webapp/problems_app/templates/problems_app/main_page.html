@@ -14,49 +14,44 @@
                     <img src="{% static 'problems_app/185038_home_house_icon.png' %}">
                 </button>
             </a>
-            <a href="{% url 'all_solutions' 'name' 'asc' %}" class="nav-link">
+            <div>
+                <a href="{% url 'all_solutions' 'name' 'asc' %}" class="nav-link">
                 <button>
                     <text> Lista rozwiązań </text>
                 </button>
-            </a>
+                </a>
+                <a href="{% url 'add_solution' %}" class="nav-link">
+                    <button>
+                        <text> Wprowadź rozwiązanie </text>
+                    </button>
+                </a>
+            </div>
         </div>
     </header>
     <main>
         <div class="center">
-            <div class="functions-con">
-                <div class="searching-con">
+            <form method="post" enctype="multipart/form-data" class="functions-con">
+                {% csrf_token %}
+
+                <div class="searching-area">
                     <div class="text-con">
-                        <text> Wyszukaj problem </text>
+                        <text> Wyszukaj rozwiązanie </text>
                     </div>
-                    <form method="post">
-                    {% csrf_token %}
-                    {{ form }}
-                    <input type="submit" value="Szukaj">
-                    </form>
+                    {{ form.data }}
                 </div>
-                <div>
+
+                <div class="text-area">
                     <div class="text-con">
                         <text> lub </text>
                     </div>
                 </div>
-                <div>
-                    <form method="post" enctype="multipart/form-data">
-                    {% csrf_token %}
-                    {{ im_form }}
-                    <input type="submit" value="Szukaj">
-                    </form>
-
+                <div class="image-upload-area">
+                    {{ form.image }}
                 </div>
-
                 <div class="button-con">
-                    <a href="{{ url_as }}">
-                        <button>
-                            <text> Wprowadź rozwiązanie </text>
-                        </button>
-                    </a>
+                    <input type="submit" value="Szukaj">
                 </div>
-
-            </div>
+            </form>
         </div>
     </main>
 </body>

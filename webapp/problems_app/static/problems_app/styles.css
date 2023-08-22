@@ -91,22 +91,45 @@ input[type="submit"]:hover,
 /* Kontener na inne kontenery */
 .functions-con
 {
-    display: grid;
+    display: flex;
+    flex-direction: column;
     height: 90vh;
 }
 
-/* Kontener na wyszukiwarkę */
-.searching-con
+/* Miejsce na wyszukiwarkę */
+.searching-area
 {
-    padding: 70px 0 0 0;
+    padding: 70px 0 20px 0;
 }
 
-.searching-con form
+.searching-area input
 {
     display: flex;
     justify-content: center;
     align-items: center;
-    margin: 20px 0;
+    margin-top: 30px;
+}
+
+.searching-area .text-con
+{
+    font-size: 40px;
+}
+
+/* Miejsce na tekst */
+.text-area
+{
+    padding: 20px 0;
+}
+
+.text-area .text-con
+{
+    font-size: 25px;
+}
+
+/* Miejsce na pole do wprowadzania obrazów */
+.image-upload-area
+{
+    padding: 40px 0;
 }
 
 /* Tekst na stronie tytułowej */
@@ -115,7 +138,6 @@ input[type="submit"]:hover,
     display: flex;
     justify-content: center;
     align-items: center;
-    font-size: 40px;
 }
 
 /* Kontener na przycisk */

@@ -19,6 +19,7 @@
 
 - wprowadzanie i porównywanie obrazów
 - - decyzja, jakie cechy chcemy brać pod uwagę
+- - pole do przesyłania obrazu
 
 - próba implementacji Haystack'a i Elasticsearch
 

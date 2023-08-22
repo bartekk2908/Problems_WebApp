@@ -4,7 +4,7 @@ from django.urls import reverse
 from django.utils import timezone
 from django.db import transaction
 
-from .forms import Q_Form, Image_Form, S_edit_Form, P_Form
+from .forms import Q_Form, S_edit_Form, P_Form
 from .utils import *
 import json
 from PIL import Image
@@ -13,26 +13,20 @@ from PIL import Image
 def main_page(request):
 
     if request.method == 'POST':
-        form = Q_Form(request.POST)
-        im_form = Image_Form(request.POST, request.FILES)
-        if form.is_valid() and im_form.is_valid():
+        form = Q_Form(request.POST, request.FILES)
+        if form.is_valid():
             query = form.cleaned_data['data']
+            file = form.cleaned_data['image']
 
-            file = im_form.cleaned_data['image']
             im = Image.open(file)
             im.show()
 
             return redirect("solution", query=query)
     else:
         form = Q_Form()
-        im_form = Image_Form
-
-    url_as = reverse("add_solution")
 
     context = {
-        "url_as": url_as,
         'form': form,
-        'im_form': im_form,
     }
 
     return render(request, 'problems_app/main_page.html', context=context)
