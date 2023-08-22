@@ -8,6 +8,8 @@ from .forms import Q_Form, S_edit_Form, P_Form
 from .utils import *
 import json
 from PIL import Image
+import base64
+from io import BytesIO
 
 
 def main_page(request):
@@ -21,7 +23,13 @@ def main_page(request):
                 return redirect("solution", query=query)
             elif file:
                 im = Image.open(file)
-                im.show()
+                buffered = BytesIO()
+                im.save(buffered, format="PNG")
+                im_str = base64.b64encode(buffered.getvalue())
+                print()
+                print(im_str)
+                request.session['image'] = str(im_str)
+                return redirect("solution")
     else:
         form = Q_Form()
 
@@ -67,8 +75,14 @@ def solution(request, query=None, p_id=None):
 
     n = len(get_all_problems())
 
-    if query is not None:
-        sims = get_similar_problems(n, query)
+    im_str = request.session.get('image', None)
+
+    if im_str is not None or query is not None:
+        if im_str is not None:
+            Image.open(BytesIO(base64.b64encode(bytes(im_str, "utf-8")))).show()
+            # sims = get_similar_problems_images(n, im)
+        else:
+            sims = get_similar_problems(n, query)
         pk = sims[0]
         others = sims[1:]
     else:

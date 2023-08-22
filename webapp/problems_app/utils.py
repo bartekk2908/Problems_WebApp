@@ -114,5 +114,5 @@ def save_images(richtext, problem):
         i.save()
 
 
-def get_similar_images(n, image):
+def get_similar_problems_images(n, image):
     pass

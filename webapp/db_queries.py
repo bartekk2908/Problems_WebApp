@@ -74,9 +74,9 @@ if __name__ == "__main__":
     show_data(Problems)
     show_data(Images)
 
-    reset_table(Problems)
-    reset_table(Images)
+    # reset_table(Problems)
+    # reset_table(Images)
 
-    enter_examples_pl()
+    # enter_examples_pl()
 
     # show_images()

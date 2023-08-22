@@ -11,6 +11,7 @@ urlpatterns = [
     path("search=<str:query>/", views.solution, name="solution"),
     path("id=<int:p_id>/", views.solution, name="solution"),
     path("search=<str:query>,id=<int:p_id>/", views.solution, name="solution"),
+    path("search/", views.solution, name="solution"),
     path("id=<int:p_id>/edit/", views.edit_solution, name="edit_solution"),
     path("all_solutions/sorting=<str:sorting>+<str:direction>/", views.all_solutions, name="all_solutions"),
 ]

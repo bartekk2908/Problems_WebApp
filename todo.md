@@ -20,8 +20,9 @@
 - wprowadzanie i porównywanie obrazów
 - - pole do przesyłania obrazu - wygląd
 - - przypadek kiedy nie ma obrazów w bazie
-- - mechanizm
+- - przesyłanie wprowadzonego obrazu do cbir !!! !!! !!!
+- - zamiana obrazów z bazy na pillow img (imgkit, wkhtmltox) !!! !!! !!!
 
-- próba implementacji Haystack'a i Elasticsearch
+- próba implementacji Haystack'a i Elasticsearch !!! !!! !!!
 
 - data ostatniej edycji wyświetlona
