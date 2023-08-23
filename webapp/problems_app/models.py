@@ -2,7 +2,7 @@ from django.db import models
 from ckeditor import fields
 
 
-class Problems(models.Model):
+class Solutions(models.Model):
     problem_id = models.IntegerField(default=None)
     problem_content_text = models.CharField(max_length=200)
     solution_content_richtext = fields.RichTextField(default="")
@@ -17,17 +17,17 @@ class Problems(models.Model):
 
     def save(self, *args, **kwargs):
         if not self.problem_id:
-            last_record = Problems.objects.order_by('-problem_id').first()
+            last_record = Solutions.objects.order_by('-problem_id').first()
             if last_record:
                 self.problem_id = last_record.problem_id + 1
             else:
                 self.problem_id = 1
-        super(Problems, self).save(*args, **kwargs)
+        super(Solutions, self).save(*args, **kwargs)
 
 
-class Images(models.Model):
-    problems_fk = models.ForeignKey(Problems, on_delete=models.CASCADE)
-    image_richtext = fields.RichTextField(default="")
+class Images_features(models.Model):
+    problems_fk = models.ForeignKey(Solutions, on_delete=models.CASCADE)
+    features_json = models.JSONField(default=None)
 
     def __str__(self):
         return f"Key: {self.problems_fk.pk}, "

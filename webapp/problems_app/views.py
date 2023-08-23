@@ -8,8 +8,13 @@ from .forms import Q_Form, S_edit_Form, P_Form
 from .utils import *
 import json
 from PIL import Image
-import base64
-from io import BytesIO
+import os
+import cv2
+
+
+temp_dir = "temp_dir/"
+if not os.path.isdir(temp_dir):
+    os.mkdir(temp_dir)
 
 
 def main_page(request):
@@ -22,13 +27,8 @@ def main_page(request):
             if query != "":
                 return redirect("solution", query=query)
             elif file:
-                im = Image.open(file)
-                buffered = BytesIO()
-                im.save(buffered, format="PNG")
-                im_str = base64.b64encode(buffered.getvalue())
-                print()
-                print(im_str)
-                request.session['image'] = str(im_str)
+                # print(os.getcwd())
+                Image.open(file).save(temp_dir + "image.png")
                 return redirect("solution")
     else:
         form = Q_Form()
@@ -48,18 +48,18 @@ def add_solution(request):
             prob = form.cleaned_data['pdata']
             sol = form.cleaned_data['sdata']
             try:
-                p = Problems.objects.get(problem_content_text=prob)
+                p = Solutions.objects.get(problem_content_text=prob)
                 print("Rozwiązanie tego problemu już istnieje.")
-            except Problems.DoesNotExist:
+            except Solutions.DoesNotExist:
                 text_data = get_text_data(prob, sol)
                 print(text_data)
-                p = Problems(problem_content_text=prob,
-                             solution_content_richtext=sol,
-                             pub_date=timezone.now(),
-                             embeddings_json=json.dumps(give_embeddings(text_data).tolist()),
-                             is_newest=True)
+                p = Solutions(problem_content_text=prob,
+                              solution_content_richtext=sol,
+                              pub_date=timezone.now(),
+                              embeddings_json=json.dumps(give_text_embeddings(text_data).tolist()),
+                              is_newest=True)
                 p.save()
-                save_images(sol, p)
+                save_images_features(sol, p)
             return redirect("main_page")
     else:
         form = P_Form()
@@ -75,14 +75,13 @@ def solution(request, query=None, p_id=None):
 
     n = len(get_all_problems())
 
-    im_str = request.session.get('image', None)
-
-    if im_str is not None or query is not None:
-        if im_str is not None:
-            Image.open(BytesIO(base64.b64encode(bytes(im_str, "utf-8")))).show()
-            # sims = get_similar_problems_images(n, im)
-        else:
+    if query is not None or os.path.isfile(temp_dir + "image.png"):
+        if query is not None:
             sims = get_similar_problems(n, query)
+        else:
+            im = cv2.imread(temp_dir + "image.png")
+            sims = get_similar_problems_images(n, im)
+            os.remove(temp_dir + "image.png")
         pk = sims[0]
         others = sims[1:]
     else:
@@ -120,17 +119,17 @@ def edit_solution(request, p_id):
             print(text_data)
 
             with transaction.atomic():
-                old = Problems.objects.get(problem_id=p_id, is_newest=True)
+                old = Solutions.objects.get(problem_id=p_id, is_newest=True)
                 old.is_newest = False
                 old.save()
-                new = Problems(problem_id=p_id,
-                               problem_content_text=prob,
-                               solution_content_richtext=sol,
-                               pub_date=timezone.now(),
-                               embeddings_json=json.dumps(give_embeddings(text_data).tolist()),
-                               is_newest=True)
+                new = Solutions(problem_id=p_id,
+                                problem_content_text=prob,
+                                solution_content_richtext=sol,
+                                pub_date=timezone.now(),
+                                embeddings_json=json.dumps(give_text_embeddings(text_data).tolist()),
+                                is_newest=True)
                 new.save()
-                save_images(sol, new)
+                save_images_features(sol, new)
             return redirect("solution", p_id=p_id)
     else:
         form = S_edit_Form(initial={"data": get_sol_text(get_newest_problem(p_id))})

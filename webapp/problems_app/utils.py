@@ -1,4 +1,4 @@
-from .models import Problems, Images
+from .models import Solutions, Images_features
 
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
@@ -7,6 +7,9 @@ from transformers import BertTokenizer, BertModel
 import torch
 import json
 from bs4 import BeautifulSoup
+import cv2
+import base64
+import re
 
 
 model = BertModel.from_pretrained("dkleczek/bert-base-polish-cased-v1")
@@ -15,30 +18,30 @@ tokenizer = BertTokenizer.from_pretrained("dkleczek/bert-base-polish-cased-v1")
 
 def get_prob_text(pk):
     try:
-        prob = Problems.objects.get(pk=pk).problem_content_text
-    except Problems.DoesNotExist:
+        prob = Solutions.objects.get(pk=pk).problem_content_text
+    except Solutions.DoesNotExist:
         prob = ""
     return prob
 
 
 def get_sol_text(pk):
     try:
-        sol = Problems.objects.get(pk=pk).solution_content_richtext
-    except Problems.DoesNotExist:
+        sol = Solutions.objects.get(pk=pk).solution_content_richtext
+    except Solutions.DoesNotExist:
         sol = ""
     return sol
 
 
 def get_p_id(pk):
     try:
-        p_id = Problems.objects.get(pk=pk).problem_id
+        p_id = Solutions.objects.get(pk=pk).problem_id
         return p_id
-    except Problems.DoesNotExist:
+    except Solutions.DoesNotExist:
         print("Nie można znaleźć problemu o tym pk.")
         return None
 
 
-def give_embeddings(sen):
+def give_text_embeddings(sen):
     # print(sen)
     inputs = tokenizer(sen, return_tensors="pt", padding=True, truncation=True)
     with torch.no_grad():
@@ -48,29 +51,18 @@ def give_embeddings(sen):
 
 
 def get_similar_problems(n, query, pk=-1):
-
-    """
-    def give_similarity_old(sen1, sen2):
-
-        # Convert the texts into TF-IDF vectors
-        vectorizer = TfidfVectorizer()
-        vectors = vectorizer.fit_transform([sen1, sen2])
-
-        # Calculate the cosine similarity between the vectors
-        similarity = cosine_similarity(vectors)
-        return np.min(similarity)
-    """
-
     def give_similarity(emb1, emb2):
         return cosine_similarity(emb1, emb2)[0][0]
 
     similarities = []
-    p_list = Problems.objects.filter(is_newest=True).exclude(pk=pk)
+    p_list = Solutions.objects.filter(is_newest=True).exclude(pk=pk)
 
+    print()
+    print("SIMILARITIES: ")
     print(f"\nQuery: {query}")
     for i in range(len(p_list)):
         emb2 = np.array(json.loads(p_list[i].embeddings_json))
-        s = give_similarity(give_embeddings(query), emb2)
+        s = give_similarity(give_text_embeddings(query), emb2)
         print(f"{p_list[i].problem_content_text} -> {s:.4f}")
         similarities.append(s)
     print("\n")
@@ -79,7 +71,7 @@ def get_similar_problems(n, query, pk=-1):
 
 
 def get_all_problems(sorting_by=None, direction='asc'):
-    p_list = Problems.objects.filter(is_newest=True)
+    p_list = Solutions.objects.filter(is_newest=True)
 
     sort_types = {
         'name': {'asc': 'problem_content_text', 'desc': '-problem_content_text'},
@@ -96,9 +88,9 @@ def get_all_problems(sorting_by=None, direction='asc'):
 
 def get_newest_problem(p_id):
     try:
-        pk = Problems.objects.get(problem_id=p_id, is_newest=True).pk
+        pk = Solutions.objects.get(problem_id=p_id, is_newest=True).pk
         return pk
-    except Problems.DoesNotExist:
+    except Solutions.DoesNotExist:
         print("Nie można znaleźć problemu o tym id.")
         return None
 
@@ -107,12 +99,69 @@ def get_text_data(prob, sol):
     return prob + " " + BeautifulSoup(sol, 'html.parser').get_text().replace('\n', ' ')
 
 
-def save_images(richtext, problem):
-    images = BeautifulSoup(richtext, 'html.parser').find_all('img')
-    for im in images:
-        i = Images(problems_fk=problem, image_richtext=str(im))
+def save_images_features(richtext, problem):
+    temp_dir = 'temp_dir/'
+    images_data = BeautifulSoup(richtext, 'html.parser').find_all('img')
+    for im_data in images_data:
+        im_str = re.sub('^data:image/.+;base64,', '', im_data['src'])
+        with open(temp_dir + 'image.png', 'wb') as f:
+            f.write(base64.b64decode(im_str))
+        im = cv2.imread(temp_dir + 'image.png')
+        i = Images_features(problems_fk=problem, features_json=json.dumps(get_image_features(im).tolist()))
         i.save()
 
 
+def get_image_features(im):
+    def histogram(image, mask):
+        hist = cv2.calcHist([image], [0, 1, 2], mask, (8, 12, 3),
+                            [0, 180, 0, 256, 0, 256])
+        hist = cv2.normalize(hist, hist).flatten()
+        # return the histogram
+        return hist
+
+    im = cv2.cvtColor(im, cv2.COLOR_BGR2HSV)
+    features = []
+    (h, w) = im.shape[:2]
+    (cX, cY) = (int(w * 0.5), int(h * 0.5))
+    segments = [(0, cX, 0, cY), (cX, w, 0, cY), (cX, w, cY, h), (0, cX, cY, h)]
+    (axesX, axesY) = (int(w * 0.75) // 2, int(h * 0.75) // 2)
+    ellipMask = np.zeros(im.shape[:2], dtype="uint8")
+    cv2.ellipse(ellipMask, (cX, cY), (axesX, axesY), 0, 0, 360, 255, -1)
+    for (startX, endX, startY, endY) in segments:
+        cornerMask = np.zeros(im.shape[:2], dtype="uint8")
+        cv2.rectangle(cornerMask, (startX, startY), (endX, endY), 255, -1)
+        cornerMask = cv2.subtract(cornerMask, ellipMask)
+        hist = histogram(im, cornerMask)
+        features.extend(hist)
+    hist = histogram(im, ellipMask)
+    features.extend(hist)
+    return np.array(features)
+
+
 def get_similar_problems_images(n, image):
-    pass
+    def chi2_distance(histA, histB, eps=1e-10):
+        d = 0.5 * np.sum([((a - b) ** 2) / (a + b + eps)
+                          for (a, b) in zip(histA, histB)])
+        return d
+
+    distances = []
+    f_list = Images_features.objects.select_related('problems_fk').filter(problems_fk__is_newest=True)
+
+    print()
+    print("DIFFERENCES: ")
+    for i in range(len(f_list)):
+        features2 = json.loads(f_list[i].features_json)
+        s = chi2_distance(get_image_features(image), features2)
+        print(f"{f_list[i].problems_fk.pk} -> {s:.4f}")
+        distances.append(s)
+    print("\n")
+    indexes = sorted(range(len(distances)), key=lambda x: distances[x], reverse=False)
+    pkeys = np.array(list(map(lambda x: x.problems_fk.pk, f_list)))[indexes]
+    print(pkeys)
+
+    seen = set()
+    seen_add = seen.add
+    pkeys = [x for x in pkeys if not (x in seen or seen_add(x))]
+    print(pkeys)
+
+    return pkeys[:n]

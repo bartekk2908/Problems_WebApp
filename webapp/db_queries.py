@@ -1,12 +1,13 @@
 import manage
 manage.main()
 
-from problems_app.models import Problems, Images
+from problems_app.models import Solutions, Images_features
 from django.utils import timezone
-from problems_app.utils import give_embeddings
+from problems_app.utils import *
 import json
 from bs4 import BeautifulSoup
 import imgkit
+import cv2
 
 
 def reset_table(table):
@@ -15,9 +16,9 @@ def reset_table(table):
 
 def show_data(table):
     rows = table.objects.all()
+    print(rows)
     for d in rows:
         print(d)
-
     print(table.objects.values_list('pk', flat=True))
 
 
@@ -53,30 +54,28 @@ def enter_examples_pl():
 
     for i in range(len(pytania)):
         text_data = pytania[i] + " " + BeautifulSoup(rozwiazania[i], 'html.parser').get_text().replace('\n', ' ')
-        Problems(id=i,
-                 problem_content_text=pytania[i],
-                 solution_content_richtext=rozwiazania[i],
-                 pub_date=timezone.now(),
-                 embeddings_json=json.dumps(give_embeddings(pytania[i] + " " + rozwiazania[i]).tolist()),
-                 is_newest=True).save()
+        Solutions(id=i,
+                  problem_content_text=pytania[i],
+                  solution_content_richtext=rozwiazania[i],
+                  pub_date=timezone.now(),
+                  embeddings_json=json.dumps(give_text_embeddings(pytania[i] + " " + rozwiazania[i]).tolist()),
+                  is_newest=True).save()
 
 
-def show_images():
-    images = Images.objects.all()
-    for im in images:
-        img = imgkit.from_string(im.image_richtext, False)
-        img.show()
+def test_get_im_features():
+    im = cv2.imread('./temp_dir/image.png')
+    f = get_image_features(im)
 
 
 if __name__ == "__main__":
     print("\n\n")
 
-    show_data(Problems)
-    show_data(Images)
+    show_data(Solutions)
+    show_data(Images_features)
 
-    # reset_table(Problems)
-    # reset_table(Images)
+    # reset_table(Solutions)
+    # reset_table(Images_features)
 
     # enter_examples_pl()
 
-    # show_images()
+    # test_get_im_features()
