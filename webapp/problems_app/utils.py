@@ -50,24 +50,24 @@ def give_text_embeddings(sen):
     return embeddings
 
 
-def get_similar_problems(n, query, pk=-1):
+def get_similar_problems_text(n, query, pk=-1):
     def give_similarity(emb1, emb2):
         return cosine_similarity(emb1, emb2)[0][0]
 
     similarities = []
-    p_list = Solutions.objects.filter(is_newest=True).exclude(pk=pk)
+    s_list = Solutions.objects.filter(is_newest=True).exclude(pk=pk)
 
     print()
     print("SIMILARITIES: ")
     print(f"\nQuery: {query}")
-    for i in range(len(p_list)):
-        emb2 = np.array(json.loads(p_list[i].embeddings_json))
+    for i in range(len(s_list)):
+        emb2 = np.array(json.loads(s_list[i].embeddings_json))
         s = give_similarity(give_text_embeddings(query), emb2)
-        print(f"{p_list[i].problem_content_text} -> {s:.4f}")
+        print(f"{s_list[i].problem_content_text} -> {s:.4f}")
         similarities.append(s)
     print("\n")
     indexes = sorted(range(len(similarities)), key=lambda x: similarities[x], reverse=True)[:n]
-    return np.array(list(map(lambda x: x.pk, p_list)))[indexes]
+    return np.array(list(map(lambda x: x.pk, s_list)))[indexes]
 
 
 def get_all_problems(sorting_by=None, direction='asc'):
@@ -157,11 +157,34 @@ def get_similar_problems_images(n, image):
     print("\n")
     indexes = sorted(range(len(distances)), key=lambda x: distances[x], reverse=False)
     pkeys = np.array(list(map(lambda x: x.problems_fk.pk, f_list)))[indexes]
-    print(pkeys)
 
     seen = set()
     seen_add = seen.add
     pkeys = [x for x in pkeys if not (x in seen or seen_add(x))]
-    print(pkeys)
 
     return pkeys[:n]
+
+
+def get_similar_problems_text_and_images(n, query, image):
+
+    s_list = Solutions.objects.filter(is_newest=True)
+
+    m = len(get_all_problems())
+    pkeys1 = get_similar_problems_text(m, query)
+    pkeys2 = get_similar_problems_images(m, image)
+    print(pkeys1)
+    print(pkeys2)
+
+    counter = {}
+    for pkeys in (pkeys1, pkeys2):
+        for i in range(len(pkeys)):
+            if counter.get(pkeys[i]) is not None:
+                counter[pkeys[i]] += i
+            else:
+                counter[pkeys[i]] = i
+    print(counter)
+
+    elo = sorted(list(counter.keys()), key=lambda x: list(counter.values())[x], reverse=False)
+    print(elo)
+
+    return elo[:n]

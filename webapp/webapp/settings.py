@@ -136,8 +136,8 @@ CKEDITOR_CONFIGS = {
             ['Maximize'],
             ['Image'],
         ],
-        'height': 200,
-        'width': "250%",
+        'height': 400,
+        'width': "400%",
     },
 }
 

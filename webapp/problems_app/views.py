@@ -24,9 +24,12 @@ def main_page(request):
         if form.is_valid():
             query = form.cleaned_data['data']
             file = form.cleaned_data['image']
-            if query != "":
+            if query != "" and file:
+                Image.open(file).save(temp_dir + "image.png")
                 return redirect("solution", query=query)
-            elif file:
+            elif query != "":
+                return redirect("solution", query=query)
+            else:
                 # print(os.getcwd())
                 Image.open(file).save(temp_dir + "image.png")
                 return redirect("solution")
@@ -73,11 +76,15 @@ def add_solution(request):
 
 def solution(request, query=None, p_id=None):
 
-    n = len(get_all_problems())
+    n = 100
 
     if query is not None or os.path.isfile(temp_dir + "image.png"):
-        if query is not None:
-            sims = get_similar_problems(n, query)
+        if query is not None and os.path.isfile(temp_dir + "image.png"):
+            im = cv2.imread(temp_dir + "image.png")
+            sims = get_similar_problems_text_and_images(n, query, im)
+            os.remove(temp_dir + "image.png")
+        elif query is not None:
+            sims = get_similar_problems_text(n, query)
         else:
             im = cv2.imread(temp_dir + "image.png")
             sims = get_similar_problems_images(n, im)
@@ -86,7 +93,7 @@ def solution(request, query=None, p_id=None):
         others = sims[1:]
     else:
         pk = get_newest_problem(p_id)
-        others = get_similar_problems(n, get_prob_text(pk), pk=pk)
+        others = get_similar_problems_text(n, get_prob_text(pk), pk=pk)
 
     prob, sol = get_prob_text(pk), get_sol_text(pk)
 
