@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from django.urls import reverse
 
-from .forms import Q_Form, S_edit_Form, P_Form
+from .forms import *
 from .models import *
 from PIL import Image
 import os
@@ -12,6 +12,21 @@ import cv2
 temp_dir = "temp_dir/"
 if not os.path.isdir(temp_dir):
     os.mkdir(temp_dir)
+
+
+def login(request):
+
+    if request.method == 'POST':
+        form = Login_Form(request.POST)
+        if form.is_valid():
+            pass
+    else:
+        form = Login_Form()
+
+    context = {
+        'form': form,
+    }
+    return render(request, 'authentication/login.html', context=context)
 
 
 def main_page(request):
@@ -36,7 +51,6 @@ def main_page(request):
     context = {
         'form': form,
     }
-
     return render(request, 'problems_app/main_page.html', context=context)
 
 
@@ -61,7 +75,6 @@ def add_solution(request):
     context = {
         'form': form,
     }
-
     return render(request, 'problems_app/add_solution.html', context=context)
 
 
@@ -100,7 +113,6 @@ def solution(request, query=None, p_id=None):
         'list': sim_list,
         'pk': pk,
     }
-
     return render(request, 'problems_app/solution.html', context=context)
 
 
@@ -126,7 +138,6 @@ def edit_solution(request, p_id):
         'problem': prob,
         'form': form,
     }
-
     return render(request, 'problems_app/edit_solution.html', context=context)
 
 
@@ -142,5 +153,4 @@ def all_solutions(request, sorting, direction):
         'sorting': sorting,
         'direction': direction,
     }
-
     return render(request, 'problems_app/all_solutions.html', context=context)

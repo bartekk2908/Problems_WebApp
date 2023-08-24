@@ -30,3 +30,8 @@ class P_Form(forms.Form):
                             widget=forms.TextInput(attrs={"placeholder": " . . . ",
                                                           "class": "input-problem"}))
     sdata = fields.RichTextFormField(label="")
+
+
+class Login_Form(forms.Form):
+    username = forms.CharField(max_length=63)
+    password = forms.CharField(max_length=63, widget=forms.PasswordInput)

@@ -1,12 +1,9 @@
-
 from sklearn.feature_extraction.text import TfidfVectorizer
 
 import numpy as np
 from transformers import BertTokenizer, BertModel
 import torch
-from bs4 import BeautifulSoup
 import cv2
-
 
 
 model = BertModel.from_pretrained("dkleczek/bert-base-polish-cased-v1")
@@ -20,10 +17,6 @@ def give_text_embeddings(sen):
         outputs = model(**inputs)
     embeddings = outputs.last_hidden_state[:, 0, :].numpy()
     return embeddings
-
-
-def get_text_data(prob, sol):
-    return prob + " " + BeautifulSoup(sol, 'html.parser').get_text().replace('\n', ' ')
 
 
 def get_image_features(im):

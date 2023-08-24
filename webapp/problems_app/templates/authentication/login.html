@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="{% static 'problems_app/styles.css' %}">
+    <title>Strona główna</title>
+</head>
+<body>
+    <header class="navbar">
+        <div class="navbar-con">
+            <a href="{% url 'main_page' %}">
+                <button class="home-button">
+                    <img src="{% static 'problems_app/185038_home_house_icon.png' %}">
+                </button>
+            </a>
+            <div>
+                <a href="{% url 'all_solutions' 'name' 'asc' %}" class="nav-link">
+                <button>
+                    <text> Lista rozwiązań </text>
+                </button>
+                </a>
+                <a href="{% url 'add_solution' %}" class="nav-link">
+                    <button>
+                        <text> Wprowadź rozwiązanie </text>
+                    </button>
+                </a>
+            </div>
+        </div>
+    </header>
+    <main>
+        <h2>Log In</h2>
+        <form method="post">
+          {% csrf_token %}
+          {{ form.as_p }}
+          <button type="submit">Log In</button>
+        </form>
+    </main>
+</body>
+</html>

@@ -2,6 +2,7 @@ from django.db import models
 from ckeditor import fields
 from .utils import *
 from django.utils import timezone
+from django.contrib.auth.models import User
 
 import json
 import base64
@@ -25,6 +26,7 @@ class Solution(models.Model):
         return f"Problem_ID: {self.problem_id}, " \
                f"Problem: {self.problem_content_text}, " \
                f"Publish Date: {self.pub_date}"
+               # f"By: {self.user_fk.first_name}"
 
     def save(self, *args, **kwargs):
 
@@ -36,7 +38,7 @@ class Solution(models.Model):
                 self.problem_id = 1
 
         if not self.embeddings_json:
-            text_data = get_text_data(self.problem_content_text, self.solution_content_richtext)
+            text_data = self.get_text_data()
             print(text_data)
             self.embeddings_json = json.dumps(give_text_embeddings(text_data).tolist())
 
@@ -52,9 +54,24 @@ class Solution(models.Model):
             old.save()
             self.is_newest = True
 
-        save_images_features(self.solution_content_richtext, self)
+        self.save_images_features()
 
         super(Solution, self).save(*args, **kwargs)
+
+    def save_images_features(self):
+        temp_dir = 'temp_dir/'
+        images_data = BeautifulSoup(self.solution_content_richtext, 'html.parser').find_all('img')
+        for im_data in images_data:
+            im_str = re.sub('^data:image/.+;base64,', '', im_data['src'])
+            with open(temp_dir + 'image.png', 'wb') as f:
+                f.write(base64.b64decode(im_str))
+            im = cv2.imread(temp_dir + 'image.png')
+            i = Image_feature(problems_fk=self, features_json=json.dumps(get_image_features(im).tolist()))
+            i.save()
+
+    def get_text_data(self):
+        return (str(self.problem_content_text) + " " +
+                BeautifulSoup(self.solution_content_richtext, 'html.parser').get_text().replace('\n', ' '))
 
 
 class Image_feature(models.Model):
@@ -100,18 +117,6 @@ def get_similar_problems_text(n, query, pk=-1, limit=0.05):
     print("\n")
     indexes = sorted(range(len(similarities)), key=lambda x: similarities[x], reverse=True)[:n]
     return list(np.array(list(map(lambda x: x.pk, s_list)))[indexes])
-
-
-def save_images_features(richtext, problem):
-    temp_dir = 'temp_dir/'
-    images_data = BeautifulSoup(richtext, 'html.parser').find_all('img')
-    for im_data in images_data:
-        im_str = re.sub('^data:image/.+;base64,', '', im_data['src'])
-        with open(temp_dir + 'image.png', 'wb') as f:
-            f.write(base64.b64decode(im_str))
-        im = cv2.imread(temp_dir + 'image.png')
-        i = Image_feature(problems_fk=problem, features_json=json.dumps(get_image_features(im).tolist()))
-        i.save()
 
 
 def get_similar_problems_images(n, image, limit=5.0):
