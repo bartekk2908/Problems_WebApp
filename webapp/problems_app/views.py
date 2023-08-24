@@ -87,13 +87,13 @@ def solution(request, query=None, p_id=None):
             sims = get_similar_problems_text(n, query)
         else:
             im = cv2.imread(temp_dir + "image.png")
-            sims = get_similar_problems_images(n, im)
+            sims= get_similar_problems_images(n, im, limit=10.0)
             os.remove(temp_dir + "image.png")
         pk = sims[0]
         others = sims[1:]
     else:
         pk = get_newest_problem(p_id)
-        others = get_similar_problems_text(n, get_prob_text(pk), pk=pk)
+        others = get_similar_problems_text(n, get_prob_text(pk), pk=pk)     # FIXME
 
     prob, sol = get_prob_text(pk), get_sol_text(pk)
 
@@ -107,6 +107,7 @@ def solution(request, query=None, p_id=None):
         'solution': sol,
         'edit_url': edit_url,
         'list': sim_list,
+        'pk': pk,
     }
 
     return render(request, 'problems_app/solution.html', context=context)

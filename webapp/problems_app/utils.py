@@ -50,7 +50,7 @@ def give_text_embeddings(sen):
     return embeddings
 
 
-def get_similar_problems_text(n, query, pk=-1):
+def get_similar_problems_text(n, query, pk=-1, limit=0.05):
     def give_similarity(emb1, emb2):
         return cosine_similarity(emb1, emb2)[0][0]
 
@@ -59,15 +59,16 @@ def get_similar_problems_text(n, query, pk=-1):
 
     print()
     print("SIMILARITIES: ")
-    print(f"\nQuery: {query}")
+    print(f"Query: {query}")
     for i in range(len(s_list)):
         emb2 = np.array(json.loads(s_list[i].embeddings_json))
         s = give_similarity(give_text_embeddings(query), emb2)
         print(f"{s_list[i].problem_content_text} -> {s:.4f}")
-        similarities.append(s)
+        if s > limit:
+            similarities.append(s)
     print("\n")
     indexes = sorted(range(len(similarities)), key=lambda x: similarities[x], reverse=True)[:n]
-    return np.array(list(map(lambda x: x.pk, s_list)))[indexes]
+    return list(np.array(list(map(lambda x: x.pk, s_list)))[indexes])
 
 
 def get_all_problems(sorting_by=None, direction='asc'):
@@ -99,18 +100,6 @@ def get_text_data(prob, sol):
     return prob + " " + BeautifulSoup(sol, 'html.parser').get_text().replace('\n', ' ')
 
 
-def save_images_features(richtext, problem):
-    temp_dir = 'temp_dir/'
-    images_data = BeautifulSoup(richtext, 'html.parser').find_all('img')
-    for im_data in images_data:
-        im_str = re.sub('^data:image/.+;base64,', '', im_data['src'])
-        with open(temp_dir + 'image.png', 'wb') as f:
-            f.write(base64.b64decode(im_str))
-        im = cv2.imread(temp_dir + 'image.png')
-        i = Images_features(problems_fk=problem, features_json=json.dumps(get_image_features(im).tolist()))
-        i.save()
-
-
 def get_image_features(im):
     def histogram(image, mask):
         hist = cv2.calcHist([image], [0, 1, 2], mask, (8, 12, 3),
@@ -138,10 +127,21 @@ def get_image_features(im):
     return np.array(features)
 
 
-def get_similar_problems_images(n, image):
+def save_images_features(richtext, problem):
+    temp_dir = 'temp_dir/'
+    images_data = BeautifulSoup(richtext, 'html.parser').find_all('img')
+    for im_data in images_data:
+        im_str = re.sub('^data:image/.+;base64,', '', im_data['src'])
+        with open(temp_dir + 'image.png', 'wb') as f:
+            f.write(base64.b64decode(im_str))
+        im = cv2.imread(temp_dir + 'image.png')
+        i = Images_features(problems_fk=problem, features_json=json.dumps(get_image_features(im).tolist()))
+        i.save()
+
+
+def get_similar_problems_images(n, image, limit=5.0):
     def chi2_distance(histA, histB, eps=1e-10):
-        d = 0.5 * np.sum([((a - b) ** 2) / (a + b + eps)
-                          for (a, b) in zip(histA, histB)])
+        d = 0.5 * np.sum([((a - b) ** 2) / (a + b + eps) for (a, b) in zip(histA, histB)])
         return d
 
     distances = []
@@ -151,9 +151,10 @@ def get_similar_problems_images(n, image):
     print("DIFFERENCES: ")
     for i in range(len(f_list)):
         features2 = json.loads(f_list[i].features_json)
-        s = chi2_distance(get_image_features(image), features2)
-        print(f"{f_list[i].problems_fk.pk} -> {s:.4f}")
-        distances.append(s)
+        d = chi2_distance(get_image_features(image), features2)
+        print(f"{f_list[i].problems_fk.pk} -> {d:.4f}")
+        if d < limit:
+            distances.append(d)
     print("\n")
     indexes = sorted(range(len(distances)), key=lambda x: distances[x], reverse=False)
     pkeys = np.array(list(map(lambda x: x.problems_fk.pk, f_list)))[indexes]
@@ -165,26 +166,25 @@ def get_similar_problems_images(n, image):
     return pkeys[:n]
 
 
-def get_similar_problems_text_and_images(n, query, image):
-
-    s_list = Solutions.objects.filter(is_newest=True)
+def get_similar_problems_text_and_images(n, query, image, img_imp=5):
 
     m = len(get_all_problems())
     pkeys1 = get_similar_problems_text(m, query)
-    pkeys2 = get_similar_problems_images(m, image)
+    pkeys2 = get_similar_problems_images(m, image, limit=3.0)
     print(pkeys1)
     print(pkeys2)
 
-    counter = {}
-    for pkeys in (pkeys1, pkeys2):
-        for i in range(len(pkeys)):
-            if counter.get(pkeys[i]) is not None:
-                counter[pkeys[i]] += i
-            else:
-                counter[pkeys[i]] = i
-    print(counter)
+    weights = {}
+    for pk in pkeys1:
+        w1 = pkeys1.index(pk)
+        try:
+            w2 = pkeys2.index(pk)
+        except ValueError:
+            w2 = img_imp
+        weights[pk] = w1 + w2
+    print(weights)
 
-    elo = sorted(list(counter.keys()), key=lambda x: list(counter.values())[x], reverse=False)
+    elo = [x for _, x in sorted(zip(list(weights.values()), list(weights.keys())), reverse=False)]
     print(elo)
 
     return elo[:n]
