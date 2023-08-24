@@ -1,7 +1,7 @@
 import manage
 manage.main()
 
-from problems_app.models import Solutions, Images_features
+from problems_app.models import Solution, Image_feature
 from django.utils import timezone
 from problems_app.utils import *
 import json
@@ -54,12 +54,12 @@ def enter_examples_pl():
 
     for i in range(len(pytania)):
         text_data = pytania[i] + " " + BeautifulSoup(rozwiazania[i], 'html.parser').get_text().replace('\n', ' ')
-        Solutions(id=i,
-                  problem_content_text=pytania[i],
-                  solution_content_richtext=rozwiazania[i],
-                  pub_date=timezone.now(),
-                  embeddings_json=json.dumps(give_text_embeddings(pytania[i] + " " + rozwiazania[i]).tolist()),
-                  is_newest=True).save()
+        Solution(id=i,
+                 problem_content_text=pytania[i],
+                 solution_content_richtext=rozwiazania[i],
+                 pub_date=timezone.now(),
+                 embeddings_json=json.dumps(give_text_embeddings(pytania[i] + " " + rozwiazania[i]).tolist()),
+                 is_newest=True).save()
 
 
 def test_get_im_features():
@@ -70,8 +70,8 @@ def test_get_im_features():
 if __name__ == "__main__":
     print("\n\n")
 
-    show_data(Solutions)
-    show_data(Images_features)
+    show_data(Solution)
+    show_data(Image_feature)
 
     # reset_table(Solutions)
     # reset_table(Images_features)

@@ -1,3 +1,6 @@
 from django.contrib import admin
+from .models import Solution, Image_feature
 
-# Register your models here.
+
+admin.site.register(Solution)
+admin.site.register(Image_feature)

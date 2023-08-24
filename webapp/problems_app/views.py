@@ -1,12 +1,9 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from django.urls import reverse
-from django.utils import timezone
-from django.db import transaction
 
 from .forms import Q_Form, S_edit_Form, P_Form
-from .utils import *
-import json
+from .models import *
 from PIL import Image
 import os
 import cv2
@@ -51,18 +48,12 @@ def add_solution(request):
             prob = form.cleaned_data['pdata']
             sol = form.cleaned_data['sdata']
             try:
-                p = Solutions.objects.get(problem_content_text=prob)
+                p = Solution.objects.get(problem_content_text=prob)
                 print("Rozwiązanie tego problemu już istnieje.")
-            except Solutions.DoesNotExist:
-                text_data = get_text_data(prob, sol)
-                print(text_data)
-                p = Solutions(problem_content_text=prob,
-                              solution_content_richtext=sol,
-                              pub_date=timezone.now(),
-                              embeddings_json=json.dumps(give_text_embeddings(text_data).tolist()),
-                              is_newest=True)
+            except Solution.DoesNotExist:
+                p = Solution(problem_content_text=prob,
+                             solution_content_richtext=sol)
                 p.save()
-                save_images_features(sol, p)
             return redirect("main_page")
     else:
         form = P_Form()
@@ -92,7 +83,7 @@ def solution(request, query=None, p_id=None):
         pk = sims[0]
         others = sims[1:]
     else:
-        pk = get_newest_problem(p_id)
+        pk = get_newest_solution(p_id)
         others = get_similar_problems_text(n, get_prob_text(pk), pk=pk)     # FIXME
 
     prob, sol = get_prob_text(pk), get_sol_text(pk)
@@ -114,7 +105,7 @@ def solution(request, query=None, p_id=None):
 
 
 def edit_solution(request, p_id):
-    pk = get_newest_problem(p_id)
+    pk = get_newest_solution(p_id)
     prob = get_prob_text(pk)
 
     if request.method == 'POST':
@@ -123,24 +114,13 @@ def edit_solution(request, p_id):
 
             sol = form.cleaned_data['data']
 
-            text_data = get_text_data(prob, sol)
-            print(text_data)
-
-            with transaction.atomic():
-                old = Solutions.objects.get(problem_id=p_id, is_newest=True)
-                old.is_newest = False
-                old.save()
-                new = Solutions(problem_id=p_id,
-                                problem_content_text=prob,
-                                solution_content_richtext=sol,
-                                pub_date=timezone.now(),
-                                embeddings_json=json.dumps(give_text_embeddings(text_data).tolist()),
-                                is_newest=True)
-                new.save()
-                save_images_features(sol, new)
+            new = Solution(problem_id=p_id,
+                           problem_content_text=prob,
+                           solution_content_richtext=sol)
+            new.save()
             return redirect("solution", p_id=p_id)
     else:
-        form = S_edit_Form(initial={"data": get_sol_text(get_newest_problem(p_id))})
+        form = S_edit_Form(initial={"data": get_sol_text(get_newest_solution(p_id))})
 
     context = {
         'problem': prob,
@@ -152,7 +132,7 @@ def edit_solution(request, p_id):
 
 def all_solutions(request, sorting, direction):
 
-    alls = get_all_problems(sorting_by=sorting, direction=direction)
+    alls = get_all_solutions(sorting_by=sorting, direction=direction)
 
     all_list = zip(list(map(lambda x: get_prob_text(x), alls)),
                    list(map(lambda x: reverse("solution", kwargs={"p_id": get_p_id(x)}), alls)))
