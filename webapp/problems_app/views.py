@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from django.urls import reverse
+from django.contrib.auth import login, authenticate
 
 from .forms import *
 from .models import *
@@ -19,7 +20,15 @@ def login(request):
     if request.method == 'POST':
         form = Login_Form(request.POST)
         if form.is_valid():
-            pass
+            user = authenticate(
+                username=form.cleaned_data['username'],
+                password=form.cleaned_data['password'],
+            )
+            if user is not None:
+                login(request, user)
+                print(f"Hello {user.username}")
+            else:
+                print(f'Login failed!')
     else:
         form = Login_Form()
 
