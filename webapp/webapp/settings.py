@@ -41,7 +41,8 @@ INSTALLED_APPS = [
     "ckeditor",
 ]
 
-# AUTH_USER_MODEL = 'problems_app.User'
+LOGIN_URL = 'login'
+# LOGOUT_REDIRECT_URL = 'main_page'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',

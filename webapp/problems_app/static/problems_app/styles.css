@@ -52,6 +52,19 @@ a
     filter: invert(1);
 }
 
+/* Informacja o byciu zalogowanym */
+.left-panel
+{
+    font-size: 17px;
+    display: flex;
+    align-items: center;
+}
+
+.left-panel div
+{
+    padding: 0 20px;
+}
+
 /* Przyciski */
 input[type="submit"],
 .button-con button,

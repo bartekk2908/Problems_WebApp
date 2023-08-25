@@ -11,16 +11,13 @@
 - - data dodania na liście
 
 - system logowania:
-- - logowanie się
-- - tabela użytkowników
-- - przypisanie użytkownika do pytania
-- - problem_id i zapisywanie kolejnych edycji problemu
+- - przypisanie użytkownika do pytania !!! !!! !!!
 - - użytkownik może zapisywać sobie rozwiązania
 
 - wprowadzanie i porównywanie obrazów
 - - pole do przesyłania obrazu - wygląd
 - - przypadek kiedy nie ma obrazów w bazie
 
-- próba implementacji Haystack'a i Elasticsearch !!! !!! !!!
+- próba implementacji Haystack'a i Elasticsearch
 
 - data ostatniej edycji wyświetlona

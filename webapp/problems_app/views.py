@@ -1,7 +1,8 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from django.urls import reverse
-from django.contrib.auth import login, authenticate
+from django.contrib.auth import login, authenticate, logout
+from django.contrib.auth.decorators import login_required
 
 from .forms import *
 from .models import *
@@ -15,7 +16,7 @@ if not os.path.isdir(temp_dir):
     os.mkdir(temp_dir)
 
 
-def login(request):
+def login_view(request):
 
     if request.method == 'POST':
         form = Login_Form(request.POST)
@@ -26,9 +27,11 @@ def login(request):
             )
             if user is not None:
                 login(request, user)
-                print(f"Hello {user.username}")
+                print(f"Zalogowany jako: {user.username}")
+                previous_page = request.session.get('previous_page', 'main_page')
+                return redirect(previous_page)
             else:
-                print(f'Login failed!')
+                print(f'Logowanie nie powiodło się.')
     else:
         form = Login_Form()
 
@@ -36,6 +39,13 @@ def login(request):
         'form': form,
     }
     return render(request, 'authentication/login.html', context=context)
+
+
+@login_required
+def logout_view(request):
+    previous_page = request.session.get('previous_page', 'main_page')
+    logout(request)
+    return redirect(previous_page)
 
 
 def main_page(request):
@@ -63,6 +73,7 @@ def main_page(request):
     return render(request, 'problems_app/main_page.html', context=context)
 
 
+@login_required
 def add_solution(request):
 
     if request.method == 'POST':
@@ -100,13 +111,17 @@ def solution(request, query=None, p_id=None):
             sims = get_similar_problems_text(n, query)
         else:
             im = cv2.imread(temp_dir + "image.png")
-            sims= get_similar_problems_images(n, im, limit=10.0)
+            sims = get_similar_problems_images(n, im, limit=10.0)
             os.remove(temp_dir + "image.png")
         pk = sims[0]
         others = sims[1:]
-    else:
+    elif p_id is not None:
         pk = get_newest_solution(p_id)
         others = get_similar_problems_text(n, get_prob_text(pk), pk=pk)     # FIXME
+    else:
+        sims = request.session.get("sims_list", [])
+        pk = sims[0]
+        others = sims[1:]
 
     prob, sol = get_prob_text(pk), get_sol_text(pk)
 
@@ -115,6 +130,8 @@ def solution(request, query=None, p_id=None):
     sim_list = zip(list(map(lambda x: get_prob_text(x), others)),
                    list(map(lambda x: reverse("solution", kwargs={"p_id": get_p_id(x)}), others)))
 
+    request.session["sims_list"] = [int(x) for x in [pk] + others]
+    request.session["previous_page"] = request.path
     context = {
         'problem': prob,
         'solution': sol,
@@ -125,6 +142,7 @@ def solution(request, query=None, p_id=None):
     return render(request, 'problems_app/solution.html', context=context)
 
 
+@login_required
 def edit_solution(request, p_id):
     pk = get_newest_solution(p_id)
     prob = get_prob_text(pk)
@@ -157,6 +175,7 @@ def all_solutions(request, sorting, direction):
     all_list = zip(list(map(lambda x: get_prob_text(x), alls)),
                    list(map(lambda x: reverse("solution", kwargs={"p_id": get_p_id(x)}), alls)))
 
+    request.session["previous_page"] = request.path
     context = {
         'list': all_list,
         'sorting': sorting,

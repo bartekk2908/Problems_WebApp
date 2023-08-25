@@ -7,6 +7,8 @@ from . import views
 
 
 urlpatterns = [
+    path("login/", views.login_view, name='login'),
+    path("logout/", views.logout_view, name='logout'),
     path("", views.main_page, name="main_page"),
     path("add_solution/", views.add_solution, name="add_solution"),
     path("search=<str:query>/", views.solution, name="solution"),
@@ -15,7 +17,6 @@ urlpatterns = [
     path("search/", views.solution, name="solution"),
     path("id=<int:p_id>/edit/", views.edit_solution, name="edit_solution"),
     path("all_solutions/sorting=<str:sorting>+<str:direction>/", views.all_solutions, name="all_solutions"),
-    path("login/", views.login, name='login'),
 ]
 
 if settings.DEBUG:
