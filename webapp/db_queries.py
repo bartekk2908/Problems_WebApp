@@ -6,8 +6,6 @@ from django.utils import timezone
 from problems_app.utils import *
 import json
 from bs4 import BeautifulSoup
-import imgkit
-import cv2
 
 
 def reset_table(table):
@@ -63,11 +61,6 @@ def enter_examples_pl():
                  user_fk=User.objects.get(username="admin")).save()
 
 
-def test_get_im_features():
-    im = cv2.imread('./temp_dir/image.png')
-    f = get_image_features(im)
-
-
 if __name__ == "__main__":
     print("\n\n")
 
@@ -81,5 +74,3 @@ if __name__ == "__main__":
 
     show_data(Solution)
     show_data(Image_feature)
-
-    # test_get_im_features()

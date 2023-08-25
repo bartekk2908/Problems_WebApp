@@ -1,48 +1,46 @@
-/* Resetowanie styli dla przycisków */
-button {
-  margin: 0;
-  padding: 0;
-  border: none;
-  background: none;
-  font-size: inherit;
-  font-family: inherit;
-  cursor: pointer;
+body {
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background-color: #f0f0f0;
+    font-family: Arial, sans-serif;
 }
 
-/* Kontener przycisków */
-.button-container {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between; /* Nowa właściwość */
-  align-items: flex-start;
-  margin-top: 20px;
-  height: 100vh; /* Dodajemy wysokość kontenera na całą wysokość ekranu */
-  padding: 20px; /* Dodajemy odstępy */
+.upload-container {
+    max-width: 400px;
+    width: 100%;
 }
 
-/* Grupa przycisków */
-.button-group {
-  display: flex;
+.upload-box {
+    border: 2px dashed #ccc;
+    border-radius: 8px;
+    padding: 30px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    background-color: #fff;
+    cursor: pointer;
+    transition: border-color 0.3s;
 }
 
-/* Grupa przycisków po lewej stronie */
-.left-group {
-  justify-content: flex-start; /* Nowa właściwość */
+.upload-box:hover {
+    border-color: #999;
 }
 
-/* Grupa przycisków po prawej stronie */
-.right-group {
-  justify-content: flex-end; /* Nowa właściwość */
+.upload-icon {
+    color: #ccc;
+    font-size: 48px;
 }
 
-/* Styl dla przycisków */
-.custom-button {
-  width: 200px;
-  margin: 5px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  background-color: #f0f0f0;
-  color: #333;
-  font-size: 16px;
-  text-align: center;
+.upload-text {
+    margin-top: 20px;
+    color: #666;
+    font-size: 16px;
+}
+
+#fileInput {
+    display: none;
 }
