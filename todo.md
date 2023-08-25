@@ -1,23 +1,19 @@
 # TODO
 
 - obsłużenie przypadku gdy baza danych jest pusta
-
+- przypadek kiedy nie ma obrazów w bazie
 - obsłużenie próby dodania rozwiązania do problemu, które już istnieje
-
 - obsłużenie próby niezmienienia niczego podczas edycji rozwiązania
 
-- lista wszystkich rozwiązań:
-- - lista jako kafelki
-- - data dodania na liście
+- lista wszystkich rozwiązań jako kafelki
+- data dodania na liście wszystkich rozwiązań
+- data ostatniej edycji wyświetlona
 
-- system logowania:
-- - przypisanie użytkownika do pytania !!! !!! !!!
-- - użytkownik może zapisywać sobie rozwiązania
+- użytkownik może zapisywać sobie ulubione rozwiązania
 
-- wprowadzanie i porównywanie obrazów
-- - pole do przesyłania obrazu - wygląd
-- - przypadek kiedy nie ma obrazów w bazie
+- pole do przesyłania obrazu - wygląd
+- logowanie - wygląd
+
+- wyświetlanie podobnych problemów na tym samym widoku
 
 - próba implementacji Haystack'a i Elasticsearch
-
-- data ostatniej edycji wyświetlona

@@ -20,13 +20,13 @@ class Solution(models.Model):
     pub_date = models.DateTimeField("date published")
     embeddings_json = models.JSONField(default=None)
     is_newest = models.BooleanField(default=False)
-    # user_fk = models.ForeignKey(User, on_delete=models.SET_NULL)
+    user_fk = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
 
     def __str__(self):
         return f"Problem_ID: {self.problem_id}, " \
                f"Problem: {self.problem_content_text}, " \
-               f"Publish Date: {self.pub_date}"
-               # f"By: {self.user_fk.first_name}"
+               f"Publish Date: {self.pub_date}," \
+               f"By: {self.user_fk.first_name}"
 
     def save(self, *args, **kwargs):
 
@@ -49,9 +49,12 @@ class Solution(models.Model):
             self.is_newest = True
         if self.is_newest:
             self.is_newest = False
-            old = Solution.objects.get(problem_id=self.problem_id, is_newest=True)
-            old.is_newest = False
-            old.save()
+            try:
+                old = Solution.objects.get(problem_id=self.problem_id, is_newest=True)
+                old.is_newest = False
+                old.save()
+            except Solution.DoesNotExist:
+                pass
             self.is_newest = True
 
         self.save_images_features()

@@ -1,7 +1,7 @@
 import manage
 manage.main()
 
-from problems_app.models import Solution, Image_feature
+from problems_app.models import Solution, Image_feature, User
 from django.utils import timezone
 from problems_app.utils import *
 import json
@@ -59,7 +59,8 @@ def enter_examples_pl():
                  solution_content_richtext=rozwiazania[i],
                  pub_date=timezone.now(),
                  embeddings_json=json.dumps(give_text_embeddings(pytania[i] + " " + rozwiazania[i]).tolist()),
-                 is_newest=True).save()
+                 is_newest=True,
+                 user_fk=User.objects.get(username="admin")).save()
 
 
 def test_get_im_features():
@@ -70,12 +71,15 @@ def test_get_im_features():
 if __name__ == "__main__":
     print("\n\n")
 
+    # show_data(Solution)
+    # show_data(Image_feature)
+
+    reset_table(Solution)
+    reset_table(Image_feature)
+
+    enter_examples_pl()
+
     show_data(Solution)
     show_data(Image_feature)
-
-    # reset_table(Solutions)
-    # reset_table(Images_features)
-
-    # enter_examples_pl()
 
     # test_get_im_features()

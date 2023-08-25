@@ -42,7 +42,7 @@ INSTALLED_APPS = [
 ]
 
 LOGIN_URL = 'login'
-# LOGOUT_REDIRECT_URL = 'main_page'
+LOGOUT_REDIRECT_URL = 'main_page'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',

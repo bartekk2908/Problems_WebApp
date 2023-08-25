@@ -9,11 +9,7 @@
             </a>
             <div>
                 {% if request.user.is_authenticated %}
-                    {% if request.user.first_name != None %}
-                    <text> Zalogowany jako <b> {{ request.user.first_name }} </b> </text>
-                    {% else %}
                     <text> Zalogowany jako <b> {{ request.user.username }} </b> </text>
-                    {% endif %}
                 {% else %}
                     <text> Jesteś niezalogowany </text>
                 {% endif %}

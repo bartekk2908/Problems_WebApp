@@ -28,8 +28,9 @@ def login_view(request):
             if user is not None:
                 login(request, user)
                 print(f"Zalogowany jako: {user.username}")
-                previous_page = request.session.get('previous_page', 'main_page')
-                return redirect(previous_page)
+                return redirect("main_page")
+                # previous_page = request.session.get('previous_page', 'main_page')
+                # return redirect(previous_page)
             else:
                 print(f'Logowanie nie powiodło się.')
     else:
@@ -67,6 +68,7 @@ def main_page(request):
     else:
         form = Q_Form()
 
+    request.session["previous_page"] = request.path
     context = {
         'form': form,
     }
@@ -98,6 +100,7 @@ def add_solution(request):
     return render(request, 'problems_app/add_solution.html', context=context)
 
 
+@login_required
 def solution(request, query=None, p_id=None):
 
     n = 100
@@ -168,6 +171,7 @@ def edit_solution(request, p_id):
     return render(request, 'problems_app/edit_solution.html', context=context)
 
 
+@login_required
 def all_solutions(request, sorting, direction):
 
     alls = get_all_solutions(sorting_by=sorting, direction=direction)
