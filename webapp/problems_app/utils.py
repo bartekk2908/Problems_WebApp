@@ -4,6 +4,7 @@ import numpy as np
 from transformers import BertTokenizer, BertModel
 import torch
 import cv2
+from haystack.query import SearchQuerySet, SQ
 
 
 model = BertModel.from_pretrained("dkleczek/bert-base-polish-cased-v1")
@@ -44,3 +45,29 @@ def get_image_features(im):
     hist = histogram(im, ellipMask)
     features.extend(hist)
     return np.array(features)
+
+
+def search_solutions(query, n):
+    results = SearchQuerySet().all()
+    or_statement = ""
+    words = query.split()
+    for i in range(len(words)):
+        or_statement += f"SQ(content='{words[i]}')"
+        if i == len(words) - 1:
+            break
+        or_statement += " | "
+    print(or_statement)
+    results = results.filter(eval(or_statement))
+
+    if results:
+        for result in results:
+            print()
+            print(result.score)
+            print(result.object.problem_content_text)
+            print(result.object.solution_content_richtext)
+    else:
+        print("NO RESULTS")
+
+    elo = [x.object.pk for x in results]
+    print(elo)
+    return elo

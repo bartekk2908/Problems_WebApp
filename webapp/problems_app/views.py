@@ -49,6 +49,7 @@ def logout_view(request):
     return redirect(previous_page)
 
 
+@login_required
 def main_page(request):
 
     if request.method == 'POST':
@@ -111,6 +112,7 @@ def solution(request, query=None, p_id=None):
             sims = get_similar_problems_text_and_images(n, query, im)
             os.remove(temp_dir + "image.png")
         elif query is not None:
+            search_solutions(query, n)
             sims = get_similar_problems_text(n, query)
         else:
             im = cv2.imread(temp_dir + "image.png")

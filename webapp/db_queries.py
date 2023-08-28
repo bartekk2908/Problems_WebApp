@@ -61,6 +61,47 @@ def enter_examples_pl():
                  user_fk=User.objects.get(username="admin")).save()
 
 
+def enter_examples_en():
+
+    # List of questions (problems)
+    questions = [
+        "Slow website performance.",
+        "Lack of task organization.",
+        "Low conversion rate on the store's website.",
+        "Lack of security in the web application.",
+        "Low visibility in search engine results.",
+        "Long loading time for the mobile application.",
+        "Complicated registration process.",
+        "Low user engagement in premium features.",
+        "Increased spam on the social media platform.",
+        "Lack of consistency in the user interface."
+    ]
+
+    # List of solutions
+    solutions = [
+        "Optimize images and code, leverage browser caching.",
+        "Use project management tools like Trello or Asana.",
+        "Improve the layout and appearance of the page, apply more persuasive CTAs.",
+        "Implement authentication and authorization systems, update dependencies regularly.",
+        "Apply SEO optimization strategies, create valuable content.",
+        "Optimize files and resources, utilize asynchronous loading techniques.",
+        "Simplify forms, implement social media registration.",
+        "Provide appealing benefits, offer trial periods.",
+        "Implement anti-spam mechanisms, apply content moderation.",
+        "Create consistent design guidelines, use shared components."
+    ]
+
+    for i in range(len(questions)):
+        text_data = questions[i] + " " + BeautifulSoup(solutions[i], 'html.parser').get_text().replace('\n', ' ')
+        Solution(id=i,
+                 problem_content_text=questions[i],
+                 solution_content_richtext=solutions[i],
+                 pub_date=timezone.now(),
+                 embeddings_json=json.dumps(give_text_embeddings(questions[i] + " " + solutions[i]).tolist()),
+                 is_newest=True,
+                 user_fk=User.objects.get(username="admin")).save()
+
+
 if __name__ == "__main__":
     print("\n\n")
 
@@ -70,7 +111,8 @@ if __name__ == "__main__":
     reset_table(Solution)
     reset_table(Image_feature)
 
-    enter_examples_pl()
+    # enter_examples_pl()
+    enter_examples_en()
 
     show_data(Solution)
     show_data(Image_feature)
