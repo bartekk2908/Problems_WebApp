@@ -21,7 +21,7 @@
                 {{ sims.0.solution_content_richtext | safe }}
             </div>
             <div class="button-con">
-                    <a href="{% url 'edit_solution' sims.0.problem_id %}">
+                    <a href="{% url 'edit_solution' sims.0.solution_id %}">
                         <button class="function-button">
                             <text>Edytuj to rozwiązanie</text>
                         </button>
@@ -36,7 +36,7 @@
             <div>
                 {% for sim in sims %}
                 <div class="sim-prob-con">
-                    <a href="{% url 'solution' p_id=sim.problem_id %}" class="sim-prob"> {{ sim.problem_content_text }} </a>
+                    <a href="{% url 'solution' p_id=sim.solution_id %}" class="sim-prob"> {{ sim.problem_content_text }} </a>
                 </div>
                 {% endfor %}
             </div>

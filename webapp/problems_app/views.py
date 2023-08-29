@@ -9,6 +9,7 @@ from .models import *
 from PIL import Image
 import os
 import cv2
+import glob
 
 
 temp_dir = "temp_dir/"
@@ -19,7 +20,7 @@ if not os.path.isdir(temp_dir):
 def login_view(request):
 
     if request.method == 'POST':
-        form = Login_Form(request.POST)
+        form = LoginForm(request.POST)
         if form.is_valid():
             user = authenticate(
                 username=form.cleaned_data['username'],
@@ -34,7 +35,7 @@ def login_view(request):
             else:
                 print(f'Logowanie nie powiodło się.')
     else:
-        form = Login_Form()
+        form = LoginForm()
 
     context = {
         'form': form,
@@ -53,7 +54,8 @@ def logout_view(request):
 def main_page(request):
 
     if request.method == 'POST':
-        form = Q_Form(request.POST, request.FILES)
+        form = QForm(request.POST, request.FILES)
+        """
         if form.is_valid():
             query = form.cleaned_data['data']
             file = form.cleaned_data['image']
@@ -66,12 +68,33 @@ def main_page(request):
                 # print(os.getcwd())
                 Image.open(file).save(temp_dir + "image.png")
                 return redirect("solution")
+        """
+        form_v2 = QFormv2(request.POST)
+        if form_v2.is_valid():
+            richtext = form_v2.cleaned_data['richtext']
+            query = richtext_to_text(richtext)
+            images_data = richtext_to_img_base64(richtext)
+            if images_data:
+                for i in range(len(images_data)):
+                    with open(temp_dir + f'{i}.png', 'wb') as f:
+                        f.write(base64.b64decode(images_data[i]))
+
+            if query != "" and images_data:
+                # zapisz obrazy
+                return redirect("solution", query=query)
+            elif query != "":
+                return redirect("solution", query=query)
+            else:
+                # zapisz obrazy
+                return redirect("solution")
     else:
-        form = Q_Form()
+        form = QForm()
+        form_v2 = QFormv2()
 
     request.session["previous_page"] = request.path
     context = {
         'form': form,
+        'form_v2': form_v2,
     }
     return render(request, 'problems_app/main_page.html', context=context)
 
@@ -80,7 +103,7 @@ def main_page(request):
 def add_solution(request):
 
     if request.method == 'POST':
-        form = P_Form(request.POST)
+        form = PForm(request.POST)
         if form.is_valid():
             prob = form.cleaned_data['pdata']
             sol = form.cleaned_data['sdata']
@@ -90,11 +113,12 @@ def add_solution(request):
             except Solution.DoesNotExist:
                 p = Solution(problem_content_text=prob,
                              solution_content_richtext=sol,
-                             user_fk=request.user)
+                             user=request.user)
                 p.save()
+                p.save_images_features()
             return redirect("main_page")
     else:
-        form = P_Form()
+        form = PForm()
 
     context = {
         'form': form,
@@ -106,9 +130,10 @@ def add_solution(request):
 def search(request, query=None):
     n = 100
 
-    if query is not None or os.path.isfile(temp_dir + "image.png"):
-        if query is not None and os.path.isfile(temp_dir + "image.png"):
-            im = cv2.imread(temp_dir + "image.png")
+    images_paths = glob.glob(temp_dir + "*.png")
+    if query is not None or images_paths:
+        if query is not None and images_paths:
+            images = [cv2.imread(path) for path in images_paths]
             sims = get_similar_problems_text_and_images(n, query, im)
             os.remove(temp_dir + "image.png")
         elif query is not None:
@@ -129,6 +154,7 @@ def search(request, query=None):
     return render(request, 'problems_app/search.html', context=context)
 
 
+@login_required
 def solution(request, p_id):
     obj = get_newest_solution(p_id)
 
@@ -143,17 +169,18 @@ def edit_solution(request, p_id):
     obj = get_newest_solution(p_id)
 
     if request.method == 'POST':
-        form = S_edit_Form(request.POST)
+        form = SEditForm(request.POST)
         if form.is_valid():
             sol = form.cleaned_data['data']
-            new = Solution(problem_id=p_id,
+            new = Solution(solution_id=p_id,
                            problem_content_text=obj.problem_content_text,
                            solution_content_richtext=sol,
-                           user_fk=request.user)
+                           user=request.user)
             new.save()
+            new.save_images_features()
             return redirect("solution", p_id=p_id)
     else:
-        form = S_edit_Form(initial={"data": get_newest_solution(p_id).solution_content_richtext})
+        form = SEditForm(initial={"data": get_newest_solution(p_id).solution_content_richtext})
 
     context = {
         'obj': obj,

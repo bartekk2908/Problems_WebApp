@@ -2,14 +2,18 @@ from django import forms
 from ckeditor import fields
 
 
-class Q_Form(forms.Form):
+class QFormv2(forms.Form):
+    richtext = fields.RichTextFormField(label="")
+
+
+class QForm(forms.Form):
     data = forms.CharField(label="", max_length=200,
                            widget=forms.TextInput(attrs={"placeholder": " wpisz frazę",
                                                          "class": "input-query"}))
     image = forms.ImageField(label="")
 
     def __init__(self, *args, **kwargs):
-        super(Q_Form, self).__init__(*args, **kwargs)
+        super(QForm, self).__init__(*args, **kwargs)
         self.fields['data'].required = False
         self.fields['image'].required = False
 
@@ -21,17 +25,17 @@ class Q_Form(forms.Form):
         return self.cleaned_data
 
 
-class S_edit_Form(forms.Form):
+class SEditForm(forms.Form):
     data = fields.RichTextFormField(label="")
 
 
-class P_Form(forms.Form):
+class PForm(forms.Form):
     pdata = forms.CharField(label="", max_length=200,
                             widget=forms.TextInput(attrs={"placeholder": " . . . ",
                                                           "class": "input-problem"}))
     sdata = fields.RichTextFormField(label="")
 
 
-class Login_Form(forms.Form):
+class LoginForm(forms.Form):
     username = forms.CharField(max_length=63)
     password = forms.CharField(max_length=63, widget=forms.PasswordInput)

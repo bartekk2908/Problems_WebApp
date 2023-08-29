@@ -2,10 +2,7 @@ import manage
 manage.main()
 
 from problems_app.models import Solution, Image_feature, User
-from django.utils import timezone
 from problems_app.utils import *
-import json
-from bs4 import BeautifulSoup
 
 
 def reset_table(table):
@@ -53,7 +50,7 @@ def enter_examples_pl():
     for i in range(len(pytania)):
         Solution(problem_content_text=pytania[i],
                  solution_content_richtext=rozwiazania[i],
-                 user_fk=User.objects.get(username="admin")).save()
+                 user=User.objects.get(username="admin")).save()
 
 
 def enter_examples_en():
@@ -89,7 +86,7 @@ def enter_examples_en():
     for i in range(len(questions)):
         Solution(problem_content_text=questions[i],
                  solution_content_richtext=solutions[i],
-                 user_fk=User.objects.get(username="admin")).save()
+                 user=User.objects.get(username="admin")).save()
 
 
 def test_haystack_api():

@@ -1,11 +1,10 @@
-from sklearn.feature_extraction.text import TfidfVectorizer
-
 import numpy as np
 from transformers import BertTokenizer, BertModel
 import torch
 import cv2
 from haystack.query import SearchQuerySet, SQ
-import pytz
+from bs4 import BeautifulSoup
+import re
 
 
 model = BertModel.from_pretrained("dkleczek/bert-base-polish-cased-v1")
@@ -80,3 +79,12 @@ def print_pks(object_list):
     pk_list = [x.pk for x in object_list]
     print(pk_list)
     return pk_list
+
+
+def richtext_to_text(richtext):
+    return BeautifulSoup(richtext, 'html.parser').get_text().replace('\n', ' ')
+
+
+def richtext_to_img_base64(richtext):
+    imgs = BeautifulSoup(richtext, 'html.parser').find_all('img')
+    return [re.sub('^data:image/.+;base64,', '', x['src']) for x in imgs]
