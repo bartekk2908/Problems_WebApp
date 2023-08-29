@@ -10,17 +10,14 @@
     {% include 'problems_app/navbar.html' %}
     <main>
         <div class="main-con">
-            <div class="small-text-label">
-                <text>Sugerowane rozwiązanie:</text>
-            </div>
             <div class="prob-label">
-                <b>{{ problem }} {{ pk }}</b>
+                <b>{{ obj.problem_content_text }} {{ obj.pk }}</b>
             </div>
             <div class="sol-con">
-                {{solution | safe}}
+                {{ obj.solution_content_richtext | safe }}
             </div>
             <div class="button-con">
-                    <a href="{{ edit_url }}">
+                    <a href="{% url 'edit_solution' obj.problem_id %}">
                         <button class="function-button">
                             <text>Edytuj to rozwiązanie</text>
                         </button>
@@ -28,16 +25,6 @@
             </div>
             <div>
                 <br /> <br /> <br />
-            </div>
-            <div class="text-label">
-                <text>Podobne problemy:</text>
-            </div>
-            <div>
-                {% for p, url in list %}
-                <div class="sim-prob-con">
-                    <a href="{{ url }}" class="sim-prob"> {{ p }} </a>
-                </div>
-                {% endfor %}
             </div>
         </div>
     </main>

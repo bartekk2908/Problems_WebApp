@@ -5,6 +5,7 @@ from transformers import BertTokenizer, BertModel
 import torch
 import cv2
 from haystack.query import SearchQuerySet, SQ
+import pytz
 
 
 model = BertModel.from_pretrained("dkleczek/bert-base-polish-cased-v1")
@@ -51,23 +52,31 @@ def search_solutions(query, n):
     results = SearchQuerySet().all()
     or_statement = ""
     words = query.split()
-    for i in range(len(words)):
-        or_statement += f"SQ(content='{words[i]}')"
-        if i == len(words) - 1:
+    m = len(words)
+    for i in range(m):
+        or_statement += f'SQ(content=words[{i}])'
+        if i == m - 1:
             break
         or_statement += " | "
-    print(or_statement)
+    # print(or_statement)
     results = results.filter(eval(or_statement))
 
     if results:
+        print()
+        print("SCORE: ")
+        print(f"Query: {query}")
         for result in results:
-            print()
-            print(result.score)
-            print(result.object.problem_content_text)
-            print(result.object.solution_content_richtext)
+            print(f"{result.object.problem_content_text} -> {result.score:.4f}")
     else:
         print("NO RESULTS")
 
-    elo = [x.object.pk for x in results]
-    print(elo)
-    return elo
+    object_list = [x.object for x in results[:n]]
+    # print_pks(object_list)
+
+    return object_list
+
+
+def print_pks(object_list):
+    pk_list = [x.pk for x in object_list]
+    print(pk_list)
+    return pk_list

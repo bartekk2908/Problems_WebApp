@@ -19,14 +19,14 @@ class Solution(models.Model):
     solution_content_richtext = fields.RichTextField(default="")
     pub_date = models.DateTimeField("date published")
     embeddings_json = models.JSONField(default=None)
-    is_newest = models.BooleanField(default=False)
+    is_newest = models.BooleanField()
     user_fk = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
 
     def __str__(self):
         return f"Problem_ID: {self.problem_id}, " \
                f"Problem: {self.problem_content_text}, " \
                f"Publish Date: {self.pub_date}," \
-               f"By: {self.user_fk.first_name}"
+               f"By: {self.user_fk.username}"
 
     def save(self, *args, **kwargs):
 
@@ -45,6 +45,7 @@ class Solution(models.Model):
         if not self.pub_date:
             self.pub_date = timezone.now()
 
+        print(self.is_newest)
         if self.is_newest is None:
             self.is_newest = True
         if self.is_newest:
@@ -98,15 +99,15 @@ def get_all_solutions(sorting_by=None, direction='asc'):
     except KeyError:
         s_list = s_list.order_by(sort_types["name"]["asc"])
 
-    return np.array(list(map(lambda x: x.pk, s_list)))
+    return list(s_list)
 
 
-def get_similar_problems_text(n, query, pk=-1, limit=0.05):
+def get_similar_problems_text(n, query, limit=0.05):
     def give_similarity(emb1, emb2):
         return cosine_similarity(emb1, emb2)[0][0]
 
     similarities = []
-    s_list = Solution.objects.filter(is_newest=True).exclude(pk=pk)
+    s_list = Solution.objects.filter(is_newest=True)
 
     print()
     print("SIMILARITIES: ")
@@ -119,7 +120,9 @@ def get_similar_problems_text(n, query, pk=-1, limit=0.05):
             similarities.append(s)
     print("\n")
     indexes = sorted(range(len(similarities)), key=lambda x: similarities[x], reverse=True)[:n]
-    return list(np.array(list(map(lambda x: x.pk, s_list)))[indexes])
+    object_list = list(np.array(list(s_list))[indexes])
+    print_pks(object_list)
+    return object_list
 
 
 def get_similar_problems_images(n, image, limit=5.0):
@@ -140,63 +143,38 @@ def get_similar_problems_images(n, image, limit=5.0):
             distances.append(d)
     print("\n")
     indexes = sorted(range(len(distances)), key=lambda x: distances[x], reverse=False)
-    pkeys = np.array(list(map(lambda x: x.problems_fk.pk, f_list)))[indexes]
+    pkeys = np.array(list(map(lambda x: x.problems_fk, f_list)))[indexes]
 
     seen = set()
     seen_add = seen.add
-    pkeys = [x for x in pkeys if not (x in seen or seen_add(x))]
-
-    return pkeys[:n]
+    object_list = [x for x in pkeys if not (x in seen or seen_add(x))][:n]
+    print_pks(object_list)
+    return pkeys
 
 
 def get_similar_problems_text_and_images(n, query, image, img_imp=5):
 
     m = len(get_all_solutions())
-    pkeys1 = get_similar_problems_text(m, query)
-    pkeys2 = get_similar_problems_images(m, image, limit=3.0)
-    print(pkeys1)
-    print(pkeys2)
+    objects1 = search_solutions(query, m)
+    objects2 = get_similar_problems_images(m, image, limit=3.0)
+    print_pks(objects1)
+    print_pks(objects2)
 
     weights = {}
-    for pk in pkeys1:
-        w1 = pkeys1.index(pk)
+    for obj in objects1:
+        w1 = objects1.index(obj)
         try:
-            w2 = pkeys2.index(pk)
+            w2 = objects2.index(obj)
         except ValueError:
             w2 = img_imp
-        weights[pk] = w1 + w2
+        weights[obj] = w1 + w2
     print(weights)
 
-    elo = [x for _, x in sorted(zip(list(weights.values()), list(weights.keys())), reverse=False)]
-    print(elo)
+    elo = [x for _, x in sorted(zip(list(weights.values()), list(weights.keys())), reverse=False)][:n]
+    print_pks(elo)
 
-    return elo[:n]
+    return elo
 
 
 def get_newest_solution(p_id):
-    return Solution.objects.get(problem_id=p_id, is_newest=True).pk
-
-
-def get_prob_text(pk):
-    try:
-        prob = Solution.objects.get(pk=pk).problem_content_text
-    except Solution.DoesNotExist:
-        prob = ""
-    return prob
-
-
-def get_sol_text(pk):
-    try:
-        sol = Solution.objects.get(pk=pk).solution_content_richtext
-    except Solution.DoesNotExist:
-        sol = ""
-    return sol
-
-
-def get_p_id(pk):
-    try:
-        p_id = Solution.objects.get(pk=pk).problem_id
-        return p_id
-    except Solution.DoesNotExist:
-        print("Nie można znaleźć problemu o tym pk.")
-        return None
+    return Solution.objects.get(problem_id=p_id, is_newest=True)

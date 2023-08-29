@@ -89,7 +89,8 @@ def add_solution(request):
                 print("Rozwiązanie tego problemu już istnieje.")
             except Solution.DoesNotExist:
                 p = Solution(problem_content_text=prob,
-                             solution_content_richtext=sol)
+                             solution_content_richtext=sol,
+                             user_fk=request.user)
                 p.save()
             return redirect("main_page")
     else:
@@ -102,8 +103,7 @@ def add_solution(request):
 
 
 @login_required
-def solution(request, query=None, p_id=None):
-
+def search(request, query=None):
     n = 100
 
     if query is not None or os.path.isfile(temp_dir + "image.png"):
@@ -112,62 +112,51 @@ def solution(request, query=None, p_id=None):
             sims = get_similar_problems_text_and_images(n, query, im)
             os.remove(temp_dir + "image.png")
         elif query is not None:
-            search_solutions(query, n)
-            sims = get_similar_problems_text(n, query)
+            sims = search_solutions(query, n)
+            # sims = get_similar_problems_text(n, query)
         else:
             im = cv2.imread(temp_dir + "image.png")
             sims = get_similar_problems_images(n, im, limit=10.0)
             os.remove(temp_dir + "image.png")
-        pk = sims[0]
-        others = sims[1:]
-    elif p_id is not None:
-        pk = get_newest_solution(p_id)
-        others = get_similar_problems_text(n, get_prob_text(pk), pk=pk)     # FIXME
     else:
         sims = request.session.get("sims_list", [])
-        pk = sims[0]
-        others = sims[1:]
 
-    prob, sol = get_prob_text(pk), get_sol_text(pk)
-
-    edit_url = reverse("edit_solution", kwargs={"p_id": get_p_id(pk)})
-
-    sim_list = zip(list(map(lambda x: get_prob_text(x), others)),
-                   list(map(lambda x: reverse("solution", kwargs={"p_id": get_p_id(x)}), others)))
-
-    request.session["sims_list"] = [int(x) for x in [pk] + others]
+    request.session["sims_list"] = [int(x) for x in print_pks(sims)]
     request.session["previous_page"] = request.path
     context = {
-        'problem': prob,
-        'solution': sol,
-        'edit_url': edit_url,
-        'list': sim_list,
-        'pk': pk,
+        'sims': sims,
+    }
+    return render(request, 'problems_app/search.html', context=context)
+
+
+def solution(request, p_id):
+    obj = get_newest_solution(p_id)
+
+    context = {
+        'obj': obj,
     }
     return render(request, 'problems_app/solution.html', context=context)
 
 
 @login_required
 def edit_solution(request, p_id):
-    pk = get_newest_solution(p_id)
-    prob = get_prob_text(pk)
+    obj = get_newest_solution(p_id)
 
     if request.method == 'POST':
         form = S_edit_Form(request.POST)
         if form.is_valid():
-
             sol = form.cleaned_data['data']
-
             new = Solution(problem_id=p_id,
-                           problem_content_text=prob,
-                           solution_content_richtext=sol)
+                           problem_content_text=obj.problem_content_text,
+                           solution_content_richtext=sol,
+                           user_fk=request.user)
             new.save()
             return redirect("solution", p_id=p_id)
     else:
-        form = S_edit_Form(initial={"data": get_sol_text(get_newest_solution(p_id))})
+        form = S_edit_Form(initial={"data": get_newest_solution(p_id).solution_content_richtext})
 
     context = {
-        'problem': prob,
+        'obj': obj,
         'form': form,
     }
     return render(request, 'problems_app/edit_solution.html', context=context)
@@ -175,15 +164,11 @@ def edit_solution(request, p_id):
 
 @login_required
 def all_solutions(request, sorting, direction):
-
     alls = get_all_solutions(sorting_by=sorting, direction=direction)
-
-    all_list = zip(list(map(lambda x: get_prob_text(x), alls)),
-                   list(map(lambda x: reverse("solution", kwargs={"p_id": get_p_id(x)}), alls)))
 
     request.session["previous_page"] = request.path
     context = {
-        'list': all_list,
+        'alls': alls,
         'sorting': sorting,
         'direction': direction,
     }

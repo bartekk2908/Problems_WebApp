@@ -12,7 +12,7 @@
         <form method="post" class="main-con">
             {% csrf_token %}
             <div class="prob-label">
-                <b>{{ problem }}</b>
+                <b>{{ obj.problem_content_text }}</b>
             </div>
             <div class="input-con">
                 {{ form.data }}

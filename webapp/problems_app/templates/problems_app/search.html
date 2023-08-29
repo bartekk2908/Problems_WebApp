@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="{% static 'problems_app/styles.css' %}">
+    <title>Wyniki</title>
+</head>
+<body>
+    {% include 'problems_app/navbar.html' %}
+    <main>
+        <div class="main-con">
+            {% if sims %}
+            <div class="small-text-label">
+                <text>Sugerowane rozwiązanie:</text>
+            </div>
+            <div class="prob-label">
+                <b>{{ sims.0.problem_content_text }} {{ sims.0.pk }}</b>
+            </div>
+            <div class="sol-con">
+                {{ sims.0.solution_content_richtext | safe }}
+            </div>
+            <div class="button-con">
+                    <a href="{% url 'edit_solution' sims.0.problem_id %}">
+                        <button class="function-button">
+                            <text>Edytuj to rozwiązanie</text>
+                        </button>
+                    </a>
+            </div>
+            <div>
+                <br /> <br /> <br />
+            </div>
+            <div class="text-label">
+                <text>Podobne problemy:</text>
+            </div>
+            <div>
+                {% for sim in sims %}
+                <div class="sim-prob-con">
+                    <a href="{% url 'solution' p_id=sim.problem_id %}" class="sim-prob"> {{ sim.problem_content_text }} </a>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <div class="text-label">
+                <text>Brak wyników</text>
+            </div>
+            {% endif %}
+        </div>
+    </main>
+</body>
+</html>

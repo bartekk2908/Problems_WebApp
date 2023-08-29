@@ -51,13 +51,8 @@ def enter_examples_pl():
     ]
 
     for i in range(len(pytania)):
-        text_data = pytania[i] + " " + BeautifulSoup(rozwiazania[i], 'html.parser').get_text().replace('\n', ' ')
-        Solution(id=i,
-                 problem_content_text=pytania[i],
+        Solution(problem_content_text=pytania[i],
                  solution_content_richtext=rozwiazania[i],
-                 pub_date=timezone.now(),
-                 embeddings_json=json.dumps(give_text_embeddings(pytania[i] + " " + rozwiazania[i]).tolist()),
-                 is_newest=True,
                  user_fk=User.objects.get(username="admin")).save()
 
 
@@ -92,14 +87,14 @@ def enter_examples_en():
     ]
 
     for i in range(len(questions)):
-        text_data = questions[i] + " " + BeautifulSoup(solutions[i], 'html.parser').get_text().replace('\n', ' ')
-        Solution(id=i,
-                 problem_content_text=questions[i],
+        Solution(problem_content_text=questions[i],
                  solution_content_richtext=solutions[i],
-                 pub_date=timezone.now(),
-                 embeddings_json=json.dumps(give_text_embeddings(questions[i] + " " + solutions[i]).tolist()),
-                 is_newest=True,
                  user_fk=User.objects.get(username="admin")).save()
+
+
+def test_haystack_api():
+    query = "lack low"
+    search_solutions(query, 5)
 
 
 if __name__ == "__main__":
@@ -116,3 +111,5 @@ if __name__ == "__main__":
 
     show_data(Solution)
     show_data(Image_feature)
+
+    # test_haystack_api()
