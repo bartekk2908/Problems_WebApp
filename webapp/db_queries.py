@@ -90,7 +90,7 @@ def enter_examples_en():
 
 
 def test_haystack_api():
-    query = "lack low"
+    query = "organizacja"
     search_solutions(query, 5)
 
 
@@ -100,13 +100,13 @@ if __name__ == "__main__":
     # show_data(Solution)
     # show_data(Image_feature)
 
-    reset_table(Solution)
-    reset_table(Image_feature)
+    # reset_table(Solution)
+    # reset_table(Image_feature)
 
     # enter_examples_pl()
-    enter_examples_en()
+    # enter_examples_en()
 
-    show_data(Solution)
-    show_data(Image_feature)
+    # show_data(Solution)
+    # show_data(Image_feature)
 
-    # test_haystack_api()
+    test_haystack_api()
