@@ -121,7 +121,7 @@ def get_similar_problems_text(n, query, limit=0.05):
     return object_list
 
 
-def get_similar_problems_images(n, image, limit=5.0, give_difs=False):
+def get_image_distances(image):
     def chi2_distance(histA, histB, eps=1e-10):
         d = 0.5 * np.sum([((a - b) ** 2) / (a + b + eps) for (a, b) in zip(histA, histB)])
         return d
@@ -135,46 +135,31 @@ def get_similar_problems_images(n, image, limit=5.0, give_difs=False):
         features2 = json.loads(f_list[i].features_json)
         d = chi2_distance(get_image_features(image), features2)
         print(f"{f_list[i].solution.pk} -> {d:.4f}")
-        if d < limit:
-            distances.append(d)
+        distances.append(d)
     print("\n")
-    indexes = sorted(range(len(distances)), key=lambda x: distances[x], reverse=False)
-    fkeys = np.array(list(map(lambda x: x.solution, f_list)))[indexes]
-
-    seen = set()
-    seen_add = seen.add
-    object_list = [x for x in fkeys if not (x in seen or seen_add(x))][:n]
-
-    if give_difs:
-        return object_list, sorted(distances, reverse=False)[:n]
-    else:
-        return object_list
+    pairs = sorted(zip(f_list, distances), key=lambda x: x[1], reverse=False)
+    return pairs
 
 
-def get_similar_problems_multiple_images(n, images):
-    all_objects = []
-    all_difs = []
+def get_similar_problems_multiple_images(n, images, limit=5.0):
+    all_pairs = []
     for im in images:
-        objects, difs = get_similar_problems_images(n, im, give_difs=True)
-        print(difs)
-        all_objects += objects
-        all_difs += difs
-    print(all_objects)
-    print(all_difs)
+        pairs = get_image_distances(im)
+        print_pks([x.solution for x, _ in pairs])
+        all_pairs += pairs
+    print_pks([x.solution for x, _ in all_pairs])
     seen = set()
     seen_add = seen.add
-    all_objects = [x for x, y in zip(all_objects, all_difs) if not (x in seen or seen_add(x))]
-    all_difs = [y for x, y in zip(all_objects, all_difs) if not (x in seen or seen_add(x))]
-    print(all_objects)
-    print(all_difs)
-    return [x for _, x in sorted(zip(all_difs, all_objects), reverse=False)]
+    pairs_non_dup = [(x, y) for x, y in all_pairs if y < limit and not (x in seen or seen_add(x))]
+    return [x.solution for x, y in sorted(pairs_non_dup, reverse=False, key=lambda a: a[1])][:n]
 
 
-def get_similar_problems_text_and_images(n, query, image, img_imp=5):
+def get_similar_problems_text_and_images(n, query, images, img_imp=5):
 
     m = len(get_all_solutions())
-    objects1 = search_solutions(query, m)
-    objects2 = get_similar_problems_images(m, image, limit=3.0)
+    # objects1 = search_solutions(query, m)
+    objects1 = get_similar_problems_text(m, query)
+    objects2 = get_similar_problems_multiple_images(m, images)
     print_pks(objects1)
     print_pks(objects2)
 
@@ -186,12 +171,7 @@ def get_similar_problems_text_and_images(n, query, image, img_imp=5):
         except ValueError:
             w2 = img_imp
         weights[obj] = w1 + w2
-    print(weights)
-
-    elo = [x for _, x in sorted(zip(list(weights.values()), list(weights.keys())), reverse=False)][:n]
-    print_pks(elo)
-
-    return elo
+    return [x for _, x in sorted(zip(list(weights.values()), list(weights.keys())), reverse=False, key=lambda a: a[0])][:n]
 
 
 def get_newest_solution(p_id):

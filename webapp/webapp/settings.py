@@ -144,14 +144,23 @@ CKEDITOR_CONFIGS = {
         'width': "400%",
     },
 }
-
+"""
 HAYSTACK_CONNECTIONS = {
     'default': {
         'ENGINE': 'haystack.backends.solr_backend.SolrEngine',
-        'URL': 'http://127.0.0.1:8983/solr/tester',                 # Assuming you created a core named 'tester' as described in installing search engines.
+        'URL': 'http://127.0.0.1:8983/solr/tester',
         'ADMIN_URL': 'http://127.0.0.1:8983/solr/admin/cores'
         # ...or for multicore...
         # 'URL': 'http://127.0.0.1:8983/solr/mysite',
     },
 }
-HAYSTACK_DOCUMENT_FIELD = 'text_pl'
+"""
+HAYSTACK_CONNECTIONS = {
+    'default': {
+        'ENGINE': 'haystack.backends.whoosh_backend.WhooshEngine',
+        'PATH': os.path.join(os.path.dirname(__file__), 'whoosh_index'),
+    },
+}
+
+
+

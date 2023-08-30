@@ -35,9 +35,11 @@
             </div>
             <div>
                 {% for sim in sims %}
+                {% if sim != sims.0 %}
                 <div class="sim-prob-con">
                     <a href="{% url 'solution' p_id=sim.solution_id %}" class="sim-prob"> {{ sim.problem_content_text }} </a>
                 </div>
+                {% endif %}
                 {% endfor %}
             </div>
             {% else %}

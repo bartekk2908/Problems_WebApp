@@ -131,18 +131,18 @@ def search(request, query=None):
     n = 100
 
     images_paths = glob.glob(temp_dir + "*.png")
-    if query is not None or images_paths:
-        if query is not None and images_paths:
-            images = [cv2.imread(path) for path in images_paths]
-            sims = get_similar_problems_text_and_images(n, query, im)
-            os.remove(temp_dir + "image.png")
-        elif query is not None:
-            sims = search_solutions(query, n)
-            # sims = get_similar_problems_text(n, query)
-        else:
-            im = cv2.imread(temp_dir + "image.png")
-            sims = get_similar_problems_images(n, im, limit=10.0)
-            os.remove(temp_dir + "image.png")
+
+    if query is not None and images_paths:
+        images = [cv2.imread(path) for path in images_paths]
+        sims = get_similar_problems_text_and_images(n, query, images)
+        [os.remove(path) for path in images_paths]
+    elif query is not None:
+        # sims = search_solutions(query, n)
+        sims = get_similar_problems_text(n, query)
+    elif images_paths:
+        images = [cv2.imread(path) for path in images_paths]
+        sims = get_similar_problems_multiple_images(n, images)
+        [os.remove(path) for path in images_paths]
     else:
         sims = request.session.get("sims_list", [])
 

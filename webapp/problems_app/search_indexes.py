@@ -4,7 +4,7 @@ from .models import Solution
 
 
 class NoteIndex(indexes.SearchIndex, indexes.Indexable):
-    text_pl = indexes.CharField(document=True, use_template=True, analyzer="polish")
+    text = indexes.CharField(document=True, use_template=True)
 
     def get_model(self):
         return Solution
