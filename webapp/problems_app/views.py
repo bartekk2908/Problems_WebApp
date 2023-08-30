@@ -54,8 +54,8 @@ def logout_view(request):
 def main_page(request):
 
     if request.method == 'POST':
-        form = QForm(request.POST, request.FILES)
         """
+        form = QForm(request.POST, request.FILES)
         if form.is_valid():
             query = form.cleaned_data['data']
             file = form.cleaned_data['image']
@@ -88,12 +88,12 @@ def main_page(request):
                 # zapisz obrazy
                 return redirect("solution")
     else:
-        form = QForm()
+        # form = QForm()
         form_v2 = QFormv2()
 
     request.session["previous_page"] = request.path
     context = {
-        'form': form,
+        # 'form': form,
         'form_v2': form_v2,
     }
     return render(request, 'problems_app/main_page.html', context=context)
@@ -137,8 +137,8 @@ def search(request, query=None):
         sims = get_similar_problems_text_and_images(n, query, images)
         [os.remove(path) for path in images_paths]
     elif query is not None:
-        # sims = search_solutions(query, n)
-        sims = get_similar_problems_text(n, query)
+        sims = search_solutions(query, n)
+        # sims = get_similar_problems_text(n, query)
     elif images_paths:
         images = [cv2.imread(path) for path in images_paths]
         sims = get_similar_problems_multiple_images(n, images)

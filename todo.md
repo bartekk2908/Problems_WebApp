@@ -15,10 +15,8 @@
 - ekran historii zmian problemu
 - łatwe usuwanie poszczególnych wersji problemu przez administratora
 
-- pole do przesyłania obrazu - wygląd
 - logowanie - wygląd
 
-- próba implementacji Haystack'a i Elasticsearch -----------------------------------
-- wyszukiwanie problemu na takiej samej zasadzie co wprowadzanie rozwiązania -----------------------------------
+- próba implementacji Solr dla języka polskiego -----------------------------------
 
 - próba odpalenia aplikacji na serwerze (np. heroku) publicznie

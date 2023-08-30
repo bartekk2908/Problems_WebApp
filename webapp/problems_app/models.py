@@ -38,13 +38,11 @@ class Solution(models.Model):
 
         if not self.embeddings_json:
             text_data = self.get_text_data()
-            print(text_data)
             self.embeddings_json = json.dumps(give_text_embeddings(text_data).tolist())
 
         if not self.pub_date:
             self.pub_date = timezone.now()
 
-        print(self.is_newest)
         if self.is_newest is None:
             self.is_newest = True
         if self.is_newest:
@@ -157,8 +155,8 @@ def get_similar_problems_multiple_images(n, images, limit=5.0):
 def get_similar_problems_text_and_images(n, query, images, img_imp=5):
 
     m = len(get_all_solutions())
-    # objects1 = search_solutions(query, m)
-    objects1 = get_similar_problems_text(m, query)
+    objects1 = search_solutions(query, m)
+    # objects1 = get_similar_problems_text(m, query)
     objects2 = get_similar_problems_multiple_images(m, images)
     print_pks(objects1)
     print_pks(objects2)

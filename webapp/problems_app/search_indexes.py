@@ -3,8 +3,8 @@ from haystack import indexes
 from .models import Solution
 
 
-class NoteIndex(indexes.SearchIndex, indexes.Indexable):
-    text = indexes.CharField(document=True, use_template=True)
+class SolutionIndex(indexes.SearchIndex, indexes.Indexable):
+    elo = indexes.CharField(document=True, use_template=True)
 
     def get_model(self):
         return Solution

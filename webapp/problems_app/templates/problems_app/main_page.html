@@ -9,6 +9,7 @@
 <body>
     {% include 'problems_app/navbar.html' %}
     <main>
+        <!--
         <div class="center">
             <form method="post" enctype="multipart/form-data" class="functions-con">
                 {% csrf_token %}
@@ -32,18 +33,22 @@
                 </div>
             </form>
         </div>
-
-        <form method="post" class="functions-con">
-            {% csrf_token %}
-            <div class="input-con">
-                {{ form_v2.richtext }}
-                {{ form_v2.media }}
+        -->
+        <div class="main-con">
+            <div class="text-con">
+                <text> Wprowadź problem</text>
             </div>
-            <div class="input-con">
-                <input type="submit" value="Szukaj">
-            </div>
-        </form>
-
+            <form method="post" class="functions-con">
+                {% csrf_token %}
+                <div class="input-con">
+                    {{ form_v2.richtext }}
+                    {{ form_v2.media }}
+                </div>
+                <div class="input-con">
+                    <input type="submit" value="Szukaj">
+                </div>
+            </form>
+        </div>
     </main>
 </body>
 </html>

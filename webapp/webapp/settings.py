@@ -162,5 +162,6 @@ HAYSTACK_CONNECTIONS = {
     },
 }
 
-
-
+HAYSTACK_DEFAULT_OPERATOR = 'OR'
+HAYSTACK_SIGNAL_PROCESSOR = 'problems_app.signal_processors.SolutionOnlySignalProcessor'
+HAYSTACK_DOCUMENT_FIELD = 'elo'
