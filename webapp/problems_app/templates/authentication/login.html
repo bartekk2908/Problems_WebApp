@@ -8,13 +8,16 @@
 </head>
 <body>
     <main>
-        <h2>Log In</h2>
-        <form method="post">
-            {% csrf_token %}
-            <input type="hidden" name="next" value="{{ request.GET.next }}">
-            {{ form.as_p }}
-          <button type="submit">Log In</button>
-        </form>
+        <div class="center">
+            <div class="functions-con">
+                <h2>Logowanie</h2>
+                <form method="post">
+                    {% csrf_token %}
+                    {{ form.as_p }}
+                  <button type="submit">Zaloguj</button>
+                </form>
+            </div>
+        </div>
     </main>
 </body>
 </html>

@@ -49,7 +49,6 @@ def get_image_features(im):
 
 def search_solutions(query, n):
     results = SearchQuerySet().all()
-    """
     or_statement = ""
     words = query.split()
     m = len(words)
@@ -60,9 +59,6 @@ def search_solutions(query, n):
         or_statement += " | "
     # print(or_statement)
     results = results.filter(eval(or_statement))
-    """
-    results = results.filter(query)
-
     if results:
         print()
         print("SCORE: ")

@@ -1,7 +1,5 @@
 # TODO
 
-- obsłużenie przypadku gdy baza danych jest pusta
-- przypadek kiedy nie ma obrazów w bazie
 - obsłużenie próby dodania rozwiązania do problemu, które już istnieje
 - obsłużenie próby niezmienienia niczego podczas edycji rozwiązania
 
