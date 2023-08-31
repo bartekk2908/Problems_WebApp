@@ -10,12 +10,20 @@
     {% include 'problems_app/navbar.html' %}
     <main>
         <form method="post" class="main-con">
+            <div class="title-con">
+                <text>Wprowadź rozwiązanie</text>
+            </div>
             {% csrf_token %}
             <div class="text-label">
-                <label for="{{ form.pdata.id_for_label }}">Treść problemu:</label>
+                <label for="{{ form.pdata.id_for_label }}">Tytuł problemu:</label>
             </div>
-            <div class="input-con">
+            <div class="input-problem-con">
                 {{ form.pdata }}
+                {% if form.pdata.initial %}
+                <div class="alert-con">
+                    <text>Rozwiązanie tego problemu już istnieje.</text>
+                </div>
+                {% endif %}
             </div>
             <div class="text-label">
                 <label for="{{ form.sdata.id_for_label }}">Rozwiązanie:</label>

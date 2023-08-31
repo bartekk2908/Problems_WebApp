@@ -110,13 +110,14 @@ def add_solution(request):
             try:
                 p = Solution.objects.get(problem_content_text=prob)
                 print("Rozwiązanie tego problemu już istnieje.")
+                form = PForm(initial = {"pdata": prob, "sdata": sol})
             except Solution.DoesNotExist:
                 p = Solution(problem_content_text=prob,
                              solution_content_richtext=sol,
                              user=request.user)
                 p.save()
                 p.save_images_features()
-            return redirect("main_page")
+                return redirect("main_page")
     else:
         form = PForm()
 
@@ -167,24 +168,28 @@ def solution(request, p_id):
 @login_required
 def edit_solution(request, p_id):
     obj = get_newest_solution(p_id)
-
+    is_edited = True
     if request.method == 'POST':
         form = SEditForm(request.POST)
         if form.is_valid():
             sol = form.cleaned_data['data']
-            new = Solution(solution_id=p_id,
-                           problem_content_text=obj.problem_content_text,
-                           solution_content_richtext=sol,
-                           user=request.user)
-            new.save()
-            new.save_images_features()
-            return redirect("solution", p_id=p_id)
+            if sol == obj.solution_content_richtext:
+                is_edited = False
+            else:
+                new = Solution(solution_id=p_id,
+                               problem_content_text=obj.problem_content_text,
+                               solution_content_richtext=sol,
+                               user=request.user)
+                new.save()
+                new.save_images_features()
+                return redirect("solution", p_id=p_id)
     else:
-        form = SEditForm(initial={"data": get_newest_solution(p_id).solution_content_richtext})
+        form = SEditForm(initial={"data": obj.solution_content_richtext})
 
     context = {
         'obj': obj,
         'form': form,
+        'is_edited': is_edited,
     }
     return render(request, 'problems_app/edit_solution.html', context=context)
 

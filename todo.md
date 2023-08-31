@@ -1,6 +1,5 @@
 # TODO
 
-- obsłużenie próby dodania rozwiązania do problemu, które już istnieje
 - obsłużenie próby niezmienienia niczego podczas edycji rozwiązania
 
 - lista wszystkich rozwiązań jako kafelki

@@ -93,6 +93,12 @@ input[type="submit"]:hover,
     background-color: #555;
 }
 
+.title-con
+{
+    font-size: 36px;
+    padding-bottom: 30px;
+}
+
 /* Kontener wyśrodkowujący */
 .center
 {
@@ -107,6 +113,8 @@ input[type="submit"]:hover,
 {
     display: flex;
     flex-direction: column;
+    align-items: center;
+    justify-content: center;
     height: 90vh;
 }
 
@@ -193,6 +201,12 @@ input[type="submit"]:hover,
     margin-bottom: 30px;
 }
 
+.input-problem-con
+{
+    height: 66px;
+    margin-bottom: 10px;
+}
+
 /* Pola do wprowadzania tekstu */
 .input-query, .input-problem
 {
@@ -224,7 +238,7 @@ input[type="submit"]:hover,
 /* Mały tekst */
 .small-text-label
 {
-    font-size: 17px;
+    font-size: 18px;
     margin-bottom: 10px;
 }
 
@@ -268,4 +282,11 @@ input[type="submit"]:hover,
 .sim-prob:hover
 {
     text-decoration: underline;
+}
+
+.alert-con
+{
+    margin-top: 5px;
+    font-size: 15px;
+    color:  rgb(255,70,70);
 }

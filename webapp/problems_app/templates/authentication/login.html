@@ -10,7 +10,9 @@
     <main>
         <div class="center">
             <div class="functions-con">
-                <h2>Logowanie</h2>
+                <div class="title-con">
+                    <text>Zaloguj się</text>
+                </div>
                 <form method="post">
                     {% csrf_token %}
                     {{ form.as_p }}

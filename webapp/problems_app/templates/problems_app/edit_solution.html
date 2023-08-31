@@ -17,6 +17,12 @@
             <div class="input-con">
                 {{ form.data }}
                 {{ form.media }}
+                {% if is_edited %}
+                {% else %}
+                <div class="alert-con">
+                    <text>Treść rozwiązania nie została zmieniona.</text>
+                </div>
+                {% endif %}
             </div>
             <div class="input-con">
                 <input type="submit" value="Zatwierdź rozwiązanie">
