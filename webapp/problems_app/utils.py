@@ -58,7 +58,7 @@ def search_solutions(query, n):
             break
         or_statement += " | "
     # print(or_statement)
-    results = results.filter(eval(or_statement))
+    results = results.filter(eval(or_statement)).filter(is_newest=True)
     if results:
         print()
         print("SCORE: ")

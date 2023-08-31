@@ -15,9 +15,9 @@ import cv2
 class Solution(models.Model):
     solution_id = models.IntegerField(default=None)
     problem_content_text = models.CharField(max_length=200)
-    solution_content_richtext = fields.RichTextField(default="")
+    solution_content_richtext = fields.RichTextField(default="", max_length=10_000)
     pub_date = models.DateTimeField("date published")
-    embeddings_json = models.JSONField(default=None)
+    embeddings_json = models.JSONField(default=None, null=True, blank=True)
     is_newest = models.BooleanField()
     user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
 
@@ -38,7 +38,7 @@ class Solution(models.Model):
 
         if not self.embeddings_json:
             text_data = self.get_text_data()
-            self.embeddings_json = json.dumps(give_text_embeddings(text_data).tolist())
+            # self.embeddings_json = json.dumps(give_text_embeddings(text_data).tolist())
 
         if not self.pub_date:
             self.pub_date = timezone.now()
@@ -172,5 +172,5 @@ def get_similar_problems_text_and_images(n, query, images, img_imp=5):
     return [x for _, x in sorted(zip(list(weights.values()), list(weights.keys())), reverse=False, key=lambda a: a[0])][:n]
 
 
-def get_newest_solution(p_id):
-    return Solution.objects.get(solution_id=p_id, is_newest=True)
+def get_newest_solution(solution_id):
+    return Solution.objects.get(solution_id=solution_id, is_newest=True)

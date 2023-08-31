@@ -1,7 +1,5 @@
 # TODO
 
-- obsłużenie próby niezmienienia niczego podczas edycji rozwiązania
-
 - lista wszystkich rozwiązań jako kafelki
 - data dodania na liście wszystkich rozwiązań
 - data ostatniej edycji wyświetlona

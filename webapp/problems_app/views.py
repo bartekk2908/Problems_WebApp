@@ -110,7 +110,7 @@ def add_solution(request):
             try:
                 p = Solution.objects.get(problem_content_text=prob)
                 print("Rozwiązanie tego problemu już istnieje.")
-                form = PForm(initial = {"pdata": prob, "sdata": sol})
+                form = PForm(initial={"pdata": prob, "sdata": sol})
             except Solution.DoesNotExist:
                 p = Solution(problem_content_text=prob,
                              solution_content_richtext=sol,
@@ -156,8 +156,8 @@ def search(request, query=None):
 
 
 @login_required
-def solution(request, p_id):
-    obj = get_newest_solution(p_id)
+def solution(request, solution_id):
+    obj = get_newest_solution(solution_id)
 
     context = {
         'obj': obj,
@@ -166,8 +166,8 @@ def solution(request, p_id):
 
 
 @login_required
-def edit_solution(request, p_id):
-    obj = get_newest_solution(p_id)
+def edit_solution(request, solution_id):
+    obj = get_newest_solution(solution_id)
     is_edited = True
     if request.method == 'POST':
         form = SEditForm(request.POST)
@@ -176,13 +176,13 @@ def edit_solution(request, p_id):
             if sol == obj.solution_content_richtext:
                 is_edited = False
             else:
-                new = Solution(solution_id=p_id,
+                new = Solution(solution_id=solution_id,
                                problem_content_text=obj.problem_content_text,
                                solution_content_richtext=sol,
                                user=request.user)
                 new.save()
                 new.save_images_features()
-                return redirect("solution", p_id=p_id)
+                return redirect("solution", solution_id=solution_id)
     else:
         form = SEditForm(initial={"data": obj.solution_content_richtext})
 

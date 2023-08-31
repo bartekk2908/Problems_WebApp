@@ -268,7 +268,9 @@ input[type="submit"]:hover,
 /* Pojemniki na linki */
 .sim-prob-con
 {
-    margin: 20px 0 15px 15px;
+    margin: 20px 15px 15px 15px;
+    background-color: #333;
+    
 }
 
 /* Linki do podobnych problemów */

@@ -4,7 +4,8 @@ from .models import Solution
 
 
 class SolutionIndex(indexes.SearchIndex, indexes.Indexable):
-    elo = indexes.CharField(document=True, use_template=True)
+    text = indexes.CharField(document=True, use_template=True)
+    is_newest = indexes.BooleanField(model_attr='is_newest')
 
     def get_model(self):
         return Solution

@@ -3,7 +3,7 @@ from ckeditor import fields
 
 
 class QFormv2(forms.Form):
-    richtext = fields.RichTextFormField(label="")
+    richtext = fields.RichTextFormField(label="", max_length=10_000)
 
 
 class QForm(forms.Form):

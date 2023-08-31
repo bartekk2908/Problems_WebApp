@@ -13,8 +13,8 @@ urlpatterns = [
     path("add_solution/", views.add_solution, name="add_solution"),
     path("search=<str:query>/", views.search, name="solution"),
     path("search/", views.search, name="solution"),
-    path("solution=<int:p_id>/", views.solution, name="solution"),
-    path("solution=<int:p_id>/edit/", views.edit_solution, name="edit_solution"),
+    path("solution=<int:solution_id>/", views.solution, name="solution"),
+    path("solution=<int:solution_id>/edit/", views.edit_solution, name="edit_solution"),
     path("all_solutions/sorting=<str:sorting>+<str:direction>/", views.all_solutions, name="all_solutions"),
 ]
 
