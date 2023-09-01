@@ -11,7 +11,7 @@
     <main>
         <div class="main-con">
             {% if sims %}
-            <div class="small-text-label">
+            <div class="text-label">
                 <text>Sugerowane rozwiązanie:</text>
             </div>
             <div class="prob-label">
@@ -21,11 +21,11 @@
                 {{ sims.0.solution_content_richtext | safe }}
             </div>
             <div class="button-con">
-                    <a href="{% url 'edit_solution' sims.0.solution_id %}">
-                        <button class="function-button">
-                            <text>Edytuj to rozwiązanie</text>
-                        </button>
-                    </a>
+                <a href="{% url 'edit_solution' sims.0.solution_id %}">
+                    <button class="function-button">
+                        <text>Edytuj to rozwiązanie</text>
+                    </button>
+                </a>
             </div>
             <div>
                 <br /> <br /> <br />
@@ -37,7 +37,16 @@
                 {% for sim in sims %}
                 {% if sim != sims.0 %}
                 <div class="sim-prob-con">
-                    <a href="{% url 'solution' solution_id=sim.solution_id %}" class="sim-prob"> {{ sim.problem_content_text }} </a>
+                    <a href="{% url 'solution' solution_id=sim.solution_id %}" class="sim-prob">
+                        <button>
+                            <div>
+                            {{ sim.problem_content_text }}
+                            </div>
+                            <div class="date-label">
+                                {{ sim.pub_date|date:"Y.m.d H:i" }}
+                            </div>
+                        </button>
+                    </a>
                 </div>
                 {% endif %}
                 {% endfor %}

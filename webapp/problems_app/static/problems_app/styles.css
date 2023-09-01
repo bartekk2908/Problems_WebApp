@@ -69,7 +69,8 @@ a
 input[type="submit"],
 .button-con button,
 .nav-link button,
-.sort-button-con button
+.sort-button-con button,
+.sim-prob button
 {
     padding: 4px 20px;
     background-color: #333;
@@ -88,7 +89,8 @@ input[type="submit"],
 input[type="submit"]:hover,
 .button-con button:hover,
 .nav-link button:hover,
-.sort-button-con button:hover
+.sort-button-con button:hover,
+.sim-prob button:hover
 {
     background-color: #555;
 }
@@ -257,7 +259,6 @@ input[type="submit"]:hover,
     padding-bottom: 40px;
     margin: 15px 0 20px 0;
     border-radius: 5px;
-    font-size: 20px;
 }
 
 .main-con .button-con
@@ -268,9 +269,10 @@ input[type="submit"]:hover,
 /* Pojemniki na linki */
 .sim-prob-con
 {
-    margin: 20px 15px 15px 15px;
+    margin: 15px 15px 15px 15px;
     background-color: #333;
-    
+    border-radius: 5px;
+    display: flex;
 }
 
 /* Linki do podobnych problemów */
@@ -279,11 +281,18 @@ input[type="submit"]:hover,
     color: #fff;
     text-decoration: none;
     font-weight: bold;
+    width: 100%;
+    height: 100%;
 }
 
-.sim-prob:hover
+.sim-prob button
 {
-    text-decoration: underline;
+    width: 100%;
+    height: 100%;
+    padding: 20px;
+    font-size: 20px;
+    justify-content: space-between;
+    display: flex;
 }
 
 .alert-con
@@ -291,4 +300,18 @@ input[type="submit"]:hover,
     margin-top: 5px;
     font-size: 15px;
     color:  rgb(255,70,70);
+}
+
+.date-label
+{
+    font-size: 15px;
+    text-align: right;
+    width: 170px;
+    white-space: nowrap;
+    padding-left: 10px
+}
+
+.problem_label
+{
+    text-align: left;
 }

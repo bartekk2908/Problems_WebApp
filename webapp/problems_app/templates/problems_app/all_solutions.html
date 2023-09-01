@@ -41,9 +41,17 @@
                 </a>
             </div>
             {% for obj in alls %}
-            <br />
             <div class="sim-prob-con">
-                    <a href="{% url 'solution' obj.solution_id %}" class="sim-prob"> {{ obj.problem_content_text }} </a>
+                <a href="{% url 'solution' obj.solution_id %}" class="sim-prob">
+                    <button>
+                        <div class="problem_label">
+                            {{ obj.problem_content_text }}
+                        </div>
+                        <div class="date-label">
+                            {{ obj.pub_date|date:"Y.m.d H:i" }}
+                        </div>
+                    </button>
+                </a>
             </div>
             {% empty %}
             <br />
