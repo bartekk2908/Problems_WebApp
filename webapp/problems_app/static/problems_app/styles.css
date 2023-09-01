@@ -256,7 +256,6 @@ input[type="submit"]:hover,
 {
     background-color: #333;
     padding: 20px;
-    padding-bottom: 40px;
     margin: 15px 0 20px 0;
     border-radius: 5px;
 }
@@ -299,7 +298,7 @@ input[type="submit"]:hover,
 {
     margin-top: 5px;
     font-size: 15px;
-    color:  rgb(255,70,70);
+    color: rgb(255,70,70);
 }
 
 .date-label
@@ -311,7 +310,20 @@ input[type="submit"]:hover,
     padding-left: 10px
 }
 
+.user-label
+{
+    font-size: 15px;
+    text-align: left;
+}
+
 .problem_label
 {
     text-align: left;
+}
+
+.sol-foot
+{
+    display: flex;
+    justify-content: space-between;
+    padding-top: 15px;
 }

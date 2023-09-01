@@ -7,12 +7,13 @@
     <title>Lista rozwiązań</title>
 </head>
 <body>
-    {% include 'problems_app/navbar.html' %}
+    {% include 'components/navbar.html' %}
     <main>
         <div class="main-con">
             <div class="title-con">
                 <text>Lista rozwiązań</text>
             </div>
+            {% if alls %}
             <div class="small-text-label">
                 <text>Sortuj:</text>
             </div>
@@ -40,25 +41,14 @@
                         </button>
                 </a>
             </div>
-            {% for obj in alls %}
-            <div class="sim-prob-con">
-                <a href="{% url 'solution' obj.solution_id %}" class="sim-prob">
-                    <button>
-                        <div class="problem_label">
-                            {{ obj.problem_content_text }}
-                        </div>
-                        <div class="date-label">
-                            {{ obj.pub_date|date:"Y.m.d H:i" }}
-                        </div>
-                    </button>
-                </a>
-            </div>
-            {% empty %}
-            <br />
+            {% with list=alls %}
+            {% include 'components/solution_list.html' %}
+            {% endwith %}
+            {% else %}
             <div class="text-label">
                 <text>Brak wyników</text>
             </div>
-            {% endfor %}
+            {% endif %}
             <br /> <br />
         </div>
     </main>

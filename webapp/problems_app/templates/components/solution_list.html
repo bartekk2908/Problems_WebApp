@@ -1,0 +1,15 @@
+{% load static %}
+{% for object in list %}
+<div class="sim-prob-con">
+    <a href="{% url 'solution' object.solution_id %}" class="sim-prob">
+        <button>
+            <div class="problem_label">
+                {{ object.problem_content_text }}
+            </div>
+            <div class="date-label">
+                {{ object.pub_date|date:"Y.m.d H:i" }}
+            </div>
+        </button>
+    </a>
+</div>
+{% endfor %}

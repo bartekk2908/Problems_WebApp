@@ -1,0 +1,26 @@
+{% load static %}
+<div class="prob-label">
+    <b>{{ object.problem_content_text }}</b>
+</div>
+<div class="sol-con">
+    <div>
+        {{ object.solution_content_richtext | safe }}
+    </div>
+    <div class="sol-foot">
+        <div>
+        <div class="user-label">
+        Ostatnio zmieniane: <b>{{ object.user.username }}</b>
+        </div>
+        </div>
+        <div class="date-label">
+            {{ object.pub_date|date:"Y.m.d H:i" }}
+        </div>
+    </div>
+</div>
+<div class="button-con">
+    <a href="{% url 'edit_solution' object.solution_id %}">
+        <button class="function-button">
+            <text>Edytuj rozwiązanie</text>
+        </button>
+    </a>
+</div>

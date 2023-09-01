@@ -7,22 +7,12 @@
     <title>Rozwiązanie</title>
 </head>
 <body>
-    {% include 'problems_app/navbar.html' %}
+    {% include 'components/navbar.html' %}
     <main>
         <div class="main-con">
-            <div class="prob-label">
-                <b>{{ obj.problem_content_text }} {{ obj.pk }}</b>
-            </div>
-            <div class="sol-con">
-                {{ obj.solution_content_richtext | safe }}
-            </div>
-            <div class="button-con">
-                    <a href="{% url 'edit_solution' obj.solution_id %}">
-                        <button class="function-button">
-                            <text>Edytuj to rozwiązanie</text>
-                        </button>
-                    </a>
-            </div>
+            {% with object=obj %}
+            {% include 'components/single_solution.html' %}
+            {% endwith %}
             <div>
                 <br /> <br /> <br />
             </div>

@@ -7,50 +7,25 @@
     <title>Wyniki</title>
 </head>
 <body>
-    {% include 'problems_app/navbar.html' %}
+    {% include 'components/navbar.html' %}
     <main>
         <div class="main-con">
             {% if sims %}
             <div class="text-label">
                 <text>Sugerowane rozwiązanie:</text>
             </div>
-            <div class="prob-label">
-                <b>{{ sims.0.problem_content_text }} {{ sims.0.pk }}</b>
-            </div>
-            <div class="sol-con">
-                {{ sims.0.solution_content_richtext | safe }}
-            </div>
-            <div class="button-con">
-                <a href="{% url 'edit_solution' sims.0.solution_id %}">
-                    <button class="function-button">
-                        <text>Edytuj to rozwiązanie</text>
-                    </button>
-                </a>
-            </div>
+            {% with object=sims.0 %}
+            {% include 'components/single_solution.html' %}
+            {% endwith %}
             <div>
                 <br /> <br /> <br />
             </div>
             <div class="text-label">
                 <text>Podobne problemy:</text>
             </div>
-            <div>
-                {% for sim in sims %}
-                {% if sim != sims.0 %}
-                <div class="sim-prob-con">
-                    <a href="{% url 'solution' solution_id=sim.solution_id %}" class="sim-prob">
-                        <button>
-                            <div>
-                            {{ sim.problem_content_text }}
-                            </div>
-                            <div class="date-label">
-                                {{ sim.pub_date|date:"Y.m.d H:i" }}
-                            </div>
-                        </button>
-                    </a>
-                </div>
-                {% endif %}
-                {% endfor %}
-            </div>
+            {% with list=sims|slice:"1:" %}
+            {% include 'components/solution_list.html' %}
+            {% endwith %}
             {% else %}
             <div class="text-label">
                 <text>Brak wyników</text>
