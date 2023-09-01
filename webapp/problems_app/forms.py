@@ -37,5 +37,9 @@ class PForm(forms.Form):
 
 
 class LoginForm(forms.Form):
-    username = forms.CharField(max_length=63)
-    password = forms.CharField(max_length=63, widget=forms.PasswordInput)
+    username = forms.CharField(max_length=63, label=" login",
+                               widget=forms.TextInput(attrs={"placeholder": " ",
+                                                             "class": "input-login"}))
+    password = forms.CharField(max_length=63, label="hasło",
+                               widget=forms.PasswordInput(attrs={"placeholder": " ",
+                                                                 "class": "input-login"}))

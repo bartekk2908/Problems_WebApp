@@ -225,6 +225,16 @@ input[type="submit"]:hover,
     margin-right: 10px;
 }
 
+.input-login
+{
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    height: 10px;
+    width: 200px;
+    font-size: 18px;
+}
+
 /* Główny kontener */
 .main-con
 {

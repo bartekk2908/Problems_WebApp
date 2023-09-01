@@ -179,3 +179,9 @@ def get_similar_problems_text_and_images(n, query, images, img_imp=5):
 
 def get_newest_solution(solution_id):
     return Solution.objects.get(solution_id=solution_id, is_newest=True)
+
+
+def get_solution_history(solution_id):
+    elo = Solution.objects.filter(solution_id=solution_id).order_by('-pub_date')
+    print(elo)
+    return elo
