@@ -17,9 +17,10 @@ class Solution(models.Model):
     problem_content_text = models.CharField(max_length=200)
     solution_content_richtext = fields.RichTextField(default="", max_length=10_000)
     pub_date = models.DateTimeField("date published")
-    embeddings_json = models.JSONField(default=None, null=True, blank=True)
+    # embeddings_json = models.JSONField(default=None, null=True, blank=True)
     is_newest = models.BooleanField()
     user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
+    eng_content = models.TextField()
 
     def __str__(self):
         return f"Solution_id: {self.solution_id}, " \
@@ -36,9 +37,11 @@ class Solution(models.Model):
             else:
                 self.solution_id = 1
 
+        """
         if not self.embeddings_json:
             text_data = self.get_text_data()
-            # self.embeddings_json = json.dumps(give_text_embeddings(text_data).tolist())
+            self.embeddings_json = json.dumps(give_text_embeddings(text_data).tolist())
+        """
 
         if not self.pub_date:
             self.pub_date = timezone.now()
@@ -55,6 +58,8 @@ class Solution(models.Model):
                 pass
             self.is_newest = True
 
+        self.eng_content = self.get_text_data_eng()
+
         super(Solution, self).save(*args, **kwargs)
 
     def save_images_features(self):
@@ -68,9 +73,9 @@ class Solution(models.Model):
             i.save()
             os.remove(temp_dir + "image.png")
 
-    def get_text_data(self):
-        return (str(self.problem_content_text) + " " +
-                richtext_to_text(self.solution_content_richtext))
+    def get_text_data_eng(self):
+        return translate_pl_to_en(str(self.problem_content_text) + " " +
+                                  richtext_to_text(self.solution_content_richtext))
 
 
 class Image_feature(models.Model):

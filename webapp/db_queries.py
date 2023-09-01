@@ -94,19 +94,25 @@ def test_haystack_api():
     search_solutions(query, 5)
 
 
+def test_googletrans():
+    translate_pl_to_en("Braki i błędy. Nie wiem co robić.")
+
+
 if __name__ == "__main__":
     print("\n\n")
 
     # show_data(Solution)
     # show_data(Image_feature)
 
-    # reset_table(Solution)
-    # reset_table(Image_feature)
+    reset_table(Solution)
+    reset_table(Image_feature)
 
-    # enter_examples_pl()
+    enter_examples_pl()
     # enter_examples_en()
 
-    # show_data(Solution)
-    # show_data(Image_feature)
+    show_data(Solution)
+    show_data(Image_feature)
 
-    test_haystack_api()
+    # test_haystack_api()
+
+    # test_googletrans()

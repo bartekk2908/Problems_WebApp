@@ -5,10 +5,12 @@ import cv2
 from haystack.query import SearchQuerySet, SQ
 from bs4 import BeautifulSoup
 import re
+from googletrans import Translator
 
 
 model = BertModel.from_pretrained("dkleczek/bert-base-polish-cased-v1")
 tokenizer = BertTokenizer.from_pretrained("dkleczek/bert-base-polish-cased-v1")
+translator = Translator()
 
 
 def give_text_embeddings(sen):
@@ -48,6 +50,7 @@ def get_image_features(im):
 
 
 def search_solutions(query, n):
+    query = translate_pl_to_en(query)
     results = SearchQuerySet().all()
     or_statement = ""
     words = query.split()
@@ -87,3 +90,13 @@ def richtext_to_text(richtext):
 def richtext_to_img_base64(richtext):
     imgs = BeautifulSoup(richtext, 'html.parser').find_all('img')
     return [re.sub('^data:image/.+;base64,', '', x['src']) for x in imgs]
+
+
+def translate_pl_to_en(text_pl):
+    sentences = text_pl.split(".")
+    text_en = ""
+    for s in sentences:
+        if s != "":
+            text_en += translator.translate(s, dest='en').text + ". "
+    print(text_en)
+    return text_en
